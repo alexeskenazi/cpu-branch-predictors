@@ -1,9 +1,6 @@
 
-
-
-
  ./predictors examples/test_input.txt output.txt 
 
- ./predictors traces/short_trace1.txt output.txt 
+ make && ./predictors traces/short_trace1.txt output.txt 
 
 

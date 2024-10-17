@@ -102,6 +102,67 @@ int main(int argc, char *argv[]) {
   outfile << always_not_taken_predictor_correct << "," << always_not_taken_predictor_branch_count << ";" << endl;
   cout    << always_not_taken_predictor_correct << "," << always_not_taken_predictor_branch_count << ";" << endl;
 
+  ////////////////////////////////////////////
+  // Bimodal single bit predictor
+
+  // Creat table of table_size entries and intialize to 0 meaning not taken
+  int max_table_size = MAX_TABLE_SIZE;
+  int bimodal_single_bit_table[MAX_TABLE_SIZE] = {0};
+
+  int sizes[7] = {4, 8, 32, 64, 256, 1024, 4096};
+
+  for(int size_index = 0; size_index <7; size_index++) {
+
+      bimodal_single_bit_correct = 0;
+      bimodal_single_bit_branch_count = 0;
+      bimodal_two_bit_correct = 0;
+      bimodal_two_bit_branch_count = 0;
+    
+      // Initialize the table
+      int table_size = sizes[size_index];
+      for(int i = 0; i < MAX_TABLE_SIZE; i++) {
+        bimodal_single_bit_table[i] = 0;
+      }
+
+      infile.clear();
+      infile.seekg(0, ios::beg);
+      while (infile >> std::hex >> addr >> behavior) {
+        bimodal_single_bit_branch_count++;
+
+        // Get the index of the table
+        int index = addr % table_size;
+
+        // cout << addr;
+        // outfile << addr;
+        // cout << " Index: " << index << endl;
+
+        // Check if the prediction is correct
+        if (bimodal_single_bit_table[index] == 0 && behavior == "NT") {
+          bimodal_single_bit_correct++;
+        } else if (bimodal_single_bit_table[index] == 1 && behavior == "T") {
+          bimodal_single_bit_correct++;
+        }
+        // Update the table
+        if (behavior == "T") {
+          bimodal_single_bit_table[index] = 1;
+        } else {
+          bimodal_single_bit_table[index] = 0;
+        }
+
+      }
+
+      outfile << bimodal_single_bit_correct << "," << bimodal_single_bit_branch_count << ";" ;
+      cout    << bimodal_single_bit_correct << "," << bimodal_single_bit_branch_count << ";" ;
+
+      // we need to print a space after every output except the last one
+      if(size_index != 6) {
+        outfile << " ";
+        cout    << " ";
+      }
+
+  }
+  outfile << endl;
+  cout    << endl;
 
   // Close the input and output files
   infile.close();
