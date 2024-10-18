@@ -6,31 +6,44 @@ using namespace std;
 
 class BimodalSingleBitPredictor {
 
-  public:
+    public:
       BimodalSingleBitPredictor();
-      void resetCounters();
-      int getPrediction(int *bimodal_bit_table, int index);
-      bool isCorrectPrediction(int *bimodal_bit_table, int index, string behavior);
-      void updateTable(int *bimodal_bit_table, int index, string behavior);
+      void setTableSize(int size);
+      void reset();
+      int getPrediction(unsigned long long addr);
+      bool isCorrectPrediction(unsigned long long addr, string behavior);
+      void updateTable(unsigned long long addr, string behavior);
       int correctCount;
       int branchCount;
+    private:
+       int bimodal_bit_table[MAX_TABLE_SIZE];
+       int table_size;
 };
 
 BimodalSingleBitPredictor::BimodalSingleBitPredictor() {
-    resetCounters();
+    reset();
 }
 
-void BimodalSingleBitPredictor::resetCounters() {
+void BimodalSingleBitPredictor::setTableSize(int size) {
+  this->table_size = size;
+}
+
+void BimodalSingleBitPredictor::reset() {
     correctCount = 0;
     branchCount = 0;
+    for(int i = 0; i < MAX_TABLE_SIZE; i++) {
+      bimodal_bit_table[i] = 0;
+    }
 }
 
-int BimodalSingleBitPredictor::getPrediction(int *bimodal_bit_table, int index){
+int BimodalSingleBitPredictor::getPrediction(unsigned long long addr){
+  int index = addr % table_size;
   return bimodal_bit_table[index];
 }
 
-bool BimodalSingleBitPredictor::isCorrectPrediction(int *bimodal_bit_table, int index, string behavior) {
-  int prediction = getPrediction(bimodal_bit_table, index);
+bool BimodalSingleBitPredictor::isCorrectPrediction(unsigned long long addr, string behavior) {
+  int index = addr % table_size;
+  int prediction = getPrediction(index);
   if(prediction == NOT_TAKEN && behavior == "NT") {
     return true;
   }
@@ -41,7 +54,8 @@ bool BimodalSingleBitPredictor::isCorrectPrediction(int *bimodal_bit_table, int 
   return false; 
 }
 
-void BimodalSingleBitPredictor::updateTable(int *bimodal_bit_table, int index, string behavior) {
+void BimodalSingleBitPredictor::updateTable(unsigned long long addr, string behavior) {
+  int index = addr % table_size;
   if(behavior == "T") {
     bimodal_bit_table[index] = TAKEN;
   }

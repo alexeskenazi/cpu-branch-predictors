@@ -74,43 +74,34 @@ int main(int argc, char *argv[]) {
   outfile << always_not_taken_predictor_correct << "," << always_not_taken_predictor_branch_count << ";" << endl;
   cout    << always_not_taken_predictor_correct << "," << always_not_taken_predictor_branch_count << ";" << endl;
 
-  ////////////////////////////////////////////
-  // Bimodal single bit predictor
-  BimodalSingleBitPredictor bsbp;
-  bsbp.correctCount = 0;
-  bsbp.branchCount = 0;
 
+  ////////////////////////////////////////////
   // Creat table of table_size entries and intialize to 0 meaning not taken
-  int max_table_size = MAX_TABLE_SIZE;
   int bimodal_bit_table[MAX_TABLE_SIZE] = {0};
 
   int sizes[7] = {4, 8, 32, 64, 256, 1024, 4096};
 
+  ////////////////////////////////////////////
+  // Bimodal single bit predictor
+  BimodalSingleBitPredictor bsbp;
+
   // Bimodal single bit predictor
   for(int size_index = 0; size_index <7; size_index++) {
 
-      bsbp.resetCounters();
-    
-      // Initialize the table
       int table_size = sizes[size_index];
-      for(int i = 0; i < MAX_TABLE_SIZE; i++) {
-        bimodal_bit_table[i] = 0;
-      }
+      bsbp.setTableSize(table_size);
+      bsbp.reset();
 
       infile.clear();
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
         bsbp.branchCount++;
 
-        // Get the index of the table
-        int index = addr % table_size;
-
-        if(bsbp.isCorrectPrediction(bimodal_bit_table, index, behavior)) {
+        if(bsbp.isCorrectPrediction(addr, behavior)) {
           bsbp.correctCount++;
         }
        
-        bsbp.updateTable(bimodal_bit_table, index, behavior);
-
+        bsbp.updateTable(addr, behavior);
       }
 
       outfile << bsbp.correctCount << "," << bsbp.branchCount << ";" ;
@@ -129,31 +120,23 @@ int main(int argc, char *argv[]) {
   ////////////////////////////////////////////
   // Bimodal two bit predictor
   BimodalTwoBitPredictor b2bp;
-  
+
   for(int size_index = 0; size_index <7; size_index++) {
 
-      b2bp.resetCounters();
-    
-      // Initialize the table
       int table_size = sizes[size_index];
-      for(int i = 0; i < MAX_TABLE_SIZE; i++) {
-        bimodal_bit_table[i] = 0;
-      }
+      b2bp.setTableSize(table_size);
+      b2bp.reset();
 
       infile.clear();
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
         b2bp.branchCount++;
 
-        // Get the index of the table
-        int index = addr % table_size;
-
-        if(b2bp.isCorrectPrediction(bimodal_bit_table, index, behavior)) {
-            b2bp.correctCount++;
+        if(b2bp.isCorrectPrediction(addr, behavior)) {
+          b2bp.correctCount++;
         }
        
-        b2bp.updateTable(bimodal_bit_table, index, behavior);
-
+        b2bp.updateTable(addr, behavior);
       }
 
       outfile << b2bp.correctCount << "," << b2bp.branchCount << ";" ;
@@ -168,37 +151,29 @@ int main(int argc, char *argv[]) {
   }
   outfile << endl;
   cout    << endl;
-
-
+  
 
   ////////////////////////////////////////////
   // Bimodal three bit predictor
     BimodalThreeBitPredictor b3bp;
   
-    for(int size_index = 0; size_index <7; size_index++) {
-
-      b3bp.resetCounters();
     
-      // Initialize the table
+  for(int size_index = 0; size_index <7; size_index++) {
+
       int table_size = sizes[size_index];
-      for(int i = 0; i < MAX_TABLE_SIZE; i++) {
-        bimodal_bit_table[i] = 0;
-      }
+      b3bp.setTableSize(table_size);
+      b3bp.reset();
 
       infile.clear();
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
         b3bp.branchCount++;
 
-        // Get the index of the table
-        int index = addr % table_size;
-
-        if(b3bp.isCorrectPrediction(bimodal_bit_table, index, behavior)) {
-            b3bp.correctCount++;
+        if(b3bp.isCorrectPrediction(addr, behavior)) {
+          b3bp.correctCount++;
         }
        
-        b3bp.updateTable(bimodal_bit_table, index, behavior);
-
+        b3bp.updateTable(addr, behavior);
       }
 
       outfile << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
@@ -213,6 +188,7 @@ int main(int argc, char *argv[]) {
   }
   outfile << endl;
   cout    << endl;
+  
 
   // Close the input and output files
   infile.close();

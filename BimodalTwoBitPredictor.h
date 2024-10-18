@@ -8,24 +8,37 @@ class BimodalTwoBitPredictor {
 
   public:
       BimodalTwoBitPredictor();
-      void resetCounters();
-      int getPrediction(int *bimodal_bit_table, int index);
-      bool isCorrectPrediction(int *bimodal_bit_table, int index, string behavior);
-      void updateTable(int *bimodal_bit_table, int index, string behavior);
+      void setTableSize(int size);
+      void reset();
+      int getPrediction(unsigned long long addr);
+      bool isCorrectPrediction(unsigned long long addr, string behavior);
+      void updateTable(unsigned long long addr, string behavior);
       int correctCount;
       int branchCount;
+    private:
+       int bimodal_bit_table[MAX_TABLE_SIZE];
+       int table_size;
 };
 
 BimodalTwoBitPredictor::BimodalTwoBitPredictor() {
-    resetCounters();
+    reset();
 }
 
-void BimodalTwoBitPredictor::resetCounters() {
+void BimodalTwoBitPredictor::setTableSize(int size) {
+  this->table_size = size;
+}
+
+void BimodalTwoBitPredictor::reset() {
     correctCount = 0;
     branchCount = 0;
+    for(int i = 0; i < MAX_TABLE_SIZE; i++) {
+      bimodal_bit_table[i] = 0;
+    }
 }
 
-int BimodalTwoBitPredictor::getPrediction(int *bimodal_bit_table, int index){
+int BimodalTwoBitPredictor::getPrediction(unsigned long long addr){
+    int index = addr % table_size;
+
     // 00: Strongly not taken
     // 01: Weakly not taken
     // 10: Weakly taken
@@ -38,8 +51,9 @@ int BimodalTwoBitPredictor::getPrediction(int *bimodal_bit_table, int index){
     }
 }
 
-bool BimodalTwoBitPredictor::isCorrectPrediction(int *bimodal_bit_table, int index, string behavior) {
-    int prediction = getPrediction(bimodal_bit_table, index);
+bool BimodalTwoBitPredictor::isCorrectPrediction(unsigned long long addr, string behavior) {
+    int index = addr % table_size;
+    int prediction = getPrediction(addr);
     if(prediction == NOT_TAKEN && behavior == "NT") {
         return true;
     }
@@ -51,7 +65,8 @@ bool BimodalTwoBitPredictor::isCorrectPrediction(int *bimodal_bit_table, int ind
     return false;
 }
 
-void BimodalTwoBitPredictor::updateTable(int *bimodal_bit_table, int index, string behavior) {
+void BimodalTwoBitPredictor::updateTable(unsigned long long addr, string behavior) {
+  int index = addr % table_size;
     // 00: Strongly not taken
     // 01: Weakly not taken
     // 10: Weakly taken

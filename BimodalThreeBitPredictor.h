@@ -6,26 +6,38 @@ using namespace std;
 
 class BimodalThreeBitPredictor {
 
-  public:
-      BimodalThreeBitPredictor();
-      void resetCounters();
-      int getPrediction(int *bimodal_bit_table, int index);
-      bool isCorrectPrediction(int *bimodal_bit_table, int index, string behavior);
-      void updateTable(int *bimodal_bit_table, int index, string behavior);
-      int correctCount;
-      int branchCount;
+    public:
+    BimodalThreeBitPredictor();
+    void setTableSize(int size);
+        void reset();
+        int getPrediction(unsigned long long addr);
+        bool isCorrectPrediction(unsigned long long addr, string behavior);
+        void updateTable(unsigned long long addr, string behavior);
+        int correctCount;
+        int branchCount;
+    private:
+        int bimodal_bit_table[MAX_TABLE_SIZE];
+        int table_size;
 };
 
 BimodalThreeBitPredictor::BimodalThreeBitPredictor() {
-    resetCounters();
+    reset();
 }
 
-void BimodalThreeBitPredictor::resetCounters() {
+void BimodalThreeBitPredictor::setTableSize(int size) {
+  this->table_size = size;
+}
+
+void BimodalThreeBitPredictor::reset() {
     correctCount = 0;
     branchCount = 0;
+    for(int i = 0; i < MAX_TABLE_SIZE; i++) {
+      bimodal_bit_table[i] = 0;
+    }
 }
 
-int BimodalThreeBitPredictor::getPrediction(int *bimodal_bit_table, int index){
+int BimodalThreeBitPredictor::getPrediction(unsigned long long addr){
+    int index = addr % table_size;
     if(bimodal_bit_table[index] == THREE_STRONGLY_TAKEN) { // 
       return TAKEN;
     }
@@ -47,8 +59,9 @@ int BimodalThreeBitPredictor::getPrediction(int *bimodal_bit_table, int index){
     return NOT_TAKEN;
 }
 
-bool BimodalThreeBitPredictor::isCorrectPrediction(int *bimodal_bit_table, int index, string behavior) {
-    int prediction = getPrediction(bimodal_bit_table, index);
+bool BimodalThreeBitPredictor::isCorrectPrediction(unsigned long long addr, string behavior) {
+    int index = addr % table_size;
+    int prediction = getPrediction(addr);
     if(prediction== NOT_TAKEN && behavior == "NT") {
         return true;
     }
@@ -59,7 +72,8 @@ bool BimodalThreeBitPredictor::isCorrectPrediction(int *bimodal_bit_table, int i
     return false;
 }
 
-void BimodalThreeBitPredictor::updateTable(int *bimodal_bit_table, int index, string behavior) {
+void BimodalThreeBitPredictor::updateTable(unsigned long long addr, string behavior) {
+  int index = addr % table_size;
      if(behavior == "T") {
     if(bimodal_bit_table[index] == THREE_STRONGLY_TAKEN) { 
       bimodal_bit_table[index] = THREE_STRONGLY_TAKEN;
