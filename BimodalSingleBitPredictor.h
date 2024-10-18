@@ -10,6 +10,7 @@ class BimodalSingleBitPredictor {
       BimodalSingleBitPredictor();
       void setTableSize(int size);
       void reset();
+      int getIndex(unsigned long long addr);
       int getPrediction(unsigned long long addr);
       bool isCorrectPrediction(int prediction, string behavior);
       void updateTable(unsigned long long addr, string behavior);
@@ -36,8 +37,12 @@ void BimodalSingleBitPredictor::reset() {
     }
 }
 
+int BimodalSingleBitPredictor::getIndex(unsigned long long addr) {
+  return addr % table_size;
+}
+
 int BimodalSingleBitPredictor::getPrediction(unsigned long long addr){
-  int index = addr % table_size;
+  int index = getIndex(addr);
   return bimodal_bit_table[index];
 }
 
@@ -54,7 +59,7 @@ bool BimodalSingleBitPredictor::isCorrectPrediction(int prediction, string behav
 }
 
 void BimodalSingleBitPredictor::updateTable(unsigned long long addr, string behavior) {
-  int index = addr % table_size;
+  int index = getIndex(addr);
   if(behavior == "T") {
     bimodal_bit_table[index] = TAKEN;
   }

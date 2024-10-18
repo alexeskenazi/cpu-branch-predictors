@@ -10,6 +10,7 @@ class BimodalTwoBitPredictor {
       BimodalTwoBitPredictor();
       void setTableSize(int size);
       void reset();
+      int getIndex(unsigned long long addr);
       int getPrediction(unsigned long long addr);
       bool isCorrectPrediction(int prediction, string behavior);
       void updateTable(unsigned long long addr, string behavior);
@@ -36,8 +37,12 @@ void BimodalTwoBitPredictor::reset() {
     }
 }
 
+int BimodalTwoBitPredictor::getIndex(unsigned long long addr) {
+  return addr % table_size;
+}
+
 int BimodalTwoBitPredictor::getPrediction(unsigned long long addr){
-    int index = addr % table_size;
+    int index = getIndex(addr);
 
     // 00: Strongly not taken
     // 01: Weakly not taken
@@ -64,7 +69,7 @@ bool BimodalTwoBitPredictor::isCorrectPrediction(int prediction, string behavior
 }
 
 void BimodalTwoBitPredictor::updateTable(unsigned long long addr, string behavior) {
-  int index = addr % table_size;
+  int index = getIndex(addr);
     // 00: Strongly not taken
     // 01: Weakly not taken
     // 10: Weakly taken

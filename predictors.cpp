@@ -194,38 +194,40 @@ int main(int argc, char *argv[]) {
   cout    << endl;
   
 
-  // ////////////////////////////////////////////
-  // // Bimodal three bit predictor
-  // GsharePredictor gshare;
+  ////////////////////////////////////////////
+  // Gshare three bit predictor
+
+  cout << "Gshare three bit predictor" << endl;
+  GsharePredictor gshare;
     
-  // for(int bits = 2; bits <=12; bits++) {
+  for(int bits = 2; bits <=12; bits++) {
 
-  //     gshare.setTableSize(MAX_TABLE_SIZE);
-  //     gshare.reset();
+      gshare.setTableSize(MAX_TABLE_SIZE);
+      gshare.reset();
 
-  //     infile.clear();
-  //     infile.seekg(0, ios::beg);
-  //     while (infile >> std::hex >> addr >> behavior) {
-  //       gshare.branchCount++;
+      infile.clear();
+      infile.seekg(0, ios::beg);
+      while (infile >> std::hex >> addr >> behavior) {
+        gshare.branchCount++;
 
-  //       if (gshare.isCorrectPrediction(addr, behavior))
-  //       {
-  //         gshare.correctCount++;
-  //       }
+        int prediction = gshare.getPrediction(addr);
+        if(gshare.isCorrectPrediction(prediction, behavior)) {
+          gshare.correctCount++;
+        }
 
-  //       gshare.updateTable(addr, behavior);
-  //     }
+        gshare.updateTable(addr, behavior);
+      }
 
-  //     outfile << gshare.correctCount << "," << gshare.branchCount << ";" ;
-  //     cout    << gshare.correctCount << "," << gshare.branchCount << ";" ;
+      outfile << gshare.correctCount << "," << gshare.branchCount << ";" ;
+      cout    << gshare.correctCount << "," << gshare.branchCount << ";" ;
 
-  //     // we need to print a space after every output except the last one
-  //     if(bits != 12) {
-  //       outfile << " ";
-  //       cout    << " ";
-  //     }
+      // we need to print a space after every output except the last one
+      if(bits != 12) {
+        outfile << " ";
+        cout    << " ";
+      }
 
-  // }
+  }
 
   outfile << endl;
   cout    << endl;
