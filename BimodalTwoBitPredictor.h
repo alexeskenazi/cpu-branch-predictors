@@ -11,7 +11,7 @@ class BimodalTwoBitPredictor {
       void setTableSize(int size);
       void reset();
       int getPrediction(unsigned long long addr);
-      bool isCorrectPrediction(unsigned long long addr, string behavior);
+      bool isCorrectPrediction(int prediction, string behavior);
       void updateTable(unsigned long long addr, string behavior);
       int correctCount;
       int branchCount;
@@ -51,9 +51,7 @@ int BimodalTwoBitPredictor::getPrediction(unsigned long long addr){
     }
 }
 
-bool BimodalTwoBitPredictor::isCorrectPrediction(unsigned long long addr, string behavior) {
-    int index = addr % table_size;
-    int prediction = getPrediction(addr);
+bool BimodalTwoBitPredictor::isCorrectPrediction(int prediction, string behavior) {
     if(prediction == NOT_TAKEN && behavior == "NT") {
         return true;
     }

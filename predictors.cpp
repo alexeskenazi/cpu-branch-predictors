@@ -6,6 +6,8 @@
 #include "BimodalSingleBitPredictor.h"
 #include "BimodalTwoBitPredictor.h"
 #include "BimodalThreeBitPredictor.h"
+#include "GsharePredictor.h"
+#include "TournamentPredictor.h"
 
 using namespace std;
 
@@ -83,29 +85,30 @@ int main(int argc, char *argv[]) {
 
   ////////////////////////////////////////////
   // Bimodal single bit predictor
-  BimodalSingleBitPredictor bsbp;
+  BimodalSingleBitPredictor b1bp;
 
   // Bimodal single bit predictor
   for(int size_index = 0; size_index <7; size_index++) {
 
       int table_size = sizes[size_index];
-      bsbp.setTableSize(table_size);
-      bsbp.reset();
+      b1bp.setTableSize(table_size);
+      b1bp.reset();
 
       infile.clear();
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
-        bsbp.branchCount++;
+        b1bp.branchCount++;
 
-        if(bsbp.isCorrectPrediction(addr, behavior)) {
-          bsbp.correctCount++;
+        int prediction = b1bp.getPrediction(addr);
+        if(b1bp.isCorrectPrediction(prediction, behavior)) {
+          b1bp.correctCount++;
         }
        
-        bsbp.updateTable(addr, behavior);
+        b1bp.updateTable(addr, behavior);
       }
 
-      outfile << bsbp.correctCount << "," << bsbp.branchCount << ";" ;
-      cout    << bsbp.correctCount << "," << bsbp.branchCount << ";" ;
+      outfile << b1bp.correctCount << "," << b1bp.branchCount << ";" ;
+      cout    << b1bp.correctCount << "," << b1bp.branchCount << ";" ;
 
       // we need to print a space after every output except the last one
       if(size_index != 6) {
@@ -132,7 +135,8 @@ int main(int argc, char *argv[]) {
       while (infile >> std::hex >> addr >> behavior) {
         b2bp.branchCount++;
 
-        if(b2bp.isCorrectPrediction(addr, behavior)) {
+        int prediction = b2bp.getPrediction(addr);
+        if(b2bp.isCorrectPrediction(prediction, behavior)) {
           b2bp.correctCount++;
         }
        
@@ -168,7 +172,8 @@ int main(int argc, char *argv[]) {
       while (infile >> std::hex >> addr >> behavior) {
         b3bp.branchCount++;
 
-        if(b3bp.isCorrectPrediction(addr, behavior)) {
+        int prediction = b3bp.getPrediction(addr);
+        if(b3bp.isCorrectPrediction(prediction, behavior)) {
           b3bp.correctCount++;
         }
        
@@ -188,6 +193,47 @@ int main(int argc, char *argv[]) {
   outfile << endl;
   cout    << endl;
   
+
+  // ////////////////////////////////////////////
+  // // Bimodal three bit predictor
+  // GsharePredictor gshare;
+    
+  // for(int bits = 2; bits <=12; bits++) {
+
+  //     gshare.setTableSize(MAX_TABLE_SIZE);
+  //     gshare.reset();
+
+  //     infile.clear();
+  //     infile.seekg(0, ios::beg);
+  //     while (infile >> std::hex >> addr >> behavior) {
+  //       gshare.branchCount++;
+
+  //       if (gshare.isCorrectPrediction(addr, behavior))
+  //       {
+  //         gshare.correctCount++;
+  //       }
+
+  //       gshare.updateTable(addr, behavior);
+  //     }
+
+  //     outfile << gshare.correctCount << "," << gshare.branchCount << ";" ;
+  //     cout    << gshare.correctCount << "," << gshare.branchCount << ";" ;
+
+  //     // we need to print a space after every output except the last one
+  //     if(bits != 12) {
+  //       outfile << " ";
+  //       cout    << " ";
+  //     }
+
+  // }
+
+  outfile << endl;
+  cout    << endl;
+
+
+
+
+
 
   // Close the input and output files
   infile.close();

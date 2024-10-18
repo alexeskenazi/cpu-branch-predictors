@@ -4,10 +4,10 @@
 
 using namespace std;
 
-class BimodalSingleBitPredictor {
+class GsharePredictor {
 
     public:
-      BimodalSingleBitPredictor();
+      GsharePredictor();
       void setTableSize(int size);
       void reset();
       int getPrediction(unsigned long long addr);
@@ -20,15 +20,15 @@ class BimodalSingleBitPredictor {
        int table_size;
 };
 
-BimodalSingleBitPredictor::BimodalSingleBitPredictor() {
+GsharePredictor::GsharePredictor() {
     reset();
 }
 
-void BimodalSingleBitPredictor::setTableSize(int size) {
+void GsharePredictor::setTableSize(int size) {
   this->table_size = size;
 }
 
-void BimodalSingleBitPredictor::reset() {
+void GsharePredictor::reset() {
     correctCount = 0;
     branchCount = 0;
     for(int i = 0; i < MAX_TABLE_SIZE; i++) {
@@ -36,13 +36,12 @@ void BimodalSingleBitPredictor::reset() {
     }
 }
 
-int BimodalSingleBitPredictor::getPrediction(unsigned long long addr){
+int GsharePredictor::getPrediction(unsigned long long addr){
   int index = addr % table_size;
   return bimodal_bit_table[index];
 }
 
-bool BimodalSingleBitPredictor::isCorrectPrediction(int prediction, string behavior) {
-
+bool GsharePredictor::isCorrectPrediction(int prediction, string behavior) {
   if(prediction == NOT_TAKEN && behavior == "NT") {
     return true;
   }
@@ -53,7 +52,7 @@ bool BimodalSingleBitPredictor::isCorrectPrediction(int prediction, string behav
   return false; 
 }
 
-void BimodalSingleBitPredictor::updateTable(unsigned long long addr, string behavior) {
+void GsharePredictor::updateTable(unsigned long long addr, string behavior) {
   int index = addr % table_size;
   if(behavior == "T") {
     bimodal_bit_table[index] = TAKEN;
