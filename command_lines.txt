@@ -1,6 +1,10 @@
 
  ./predictors examples/test_input.txt output.txt 
+ make && ./predictors traces/short_trace1.txt short_trace1_output.txt
+ make && ./predictors traces/short_trace2.txt short_trace2_output.txt
 
- make && ./predictors traces/short_trace1.txt output.txt 
+
+
+ make && ./predictors traces/long_trace1.txt long_trace1_output.txt
 
 

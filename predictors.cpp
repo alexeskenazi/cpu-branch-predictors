@@ -156,7 +156,6 @@ int main(int argc, char *argv[]) {
   ////////////////////////////////////////////
   // Bimodal three bit predictor
     BimodalThreeBitPredictor b3bp;
-  
     
   for(int size_index = 0; size_index <7; size_index++) {
 
