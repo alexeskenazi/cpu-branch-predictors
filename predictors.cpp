@@ -3,173 +3,11 @@
 #include<sstream>
 #include<string>
 #include "predictors.h"
+#include "BimodalSingleBitPredictor.h"
+#include "BimodalTwoBitPredictor.h"
+#include "BimodalThreeBitPredictor.h"
 
 using namespace std;
-
-
-bool isBimodalSingleBitPredictionCorrect(int *bimodal_bit_table, int index, string behavior) {
-  if(bimodal_bit_table[index] == NOT_TAKEN && behavior == "NT") {
-    return true;
-  }
-  else if(bimodal_bit_table[index] == TAKEN && behavior == "T") {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-void updateBimodalSingleBitTable(int *bimodal_bit_table, int index, string behavior) {
-  if(behavior == "T") {
-    bimodal_bit_table[index] = TAKEN;
-  }
-  else {
-    bimodal_bit_table[index] = NOT_TAKEN;
-  }
-}
-
-
-int getBimodalTwoBitPrediction(int *bimodal_bit_table, int index) {
-  // 00: Strongly not taken
-  // 01: Weakly not taken
-  // 10: Weakly taken
-  // 11: Strongly taken
-  if(bimodal_bit_table[index] == 0 || bimodal_bit_table[index] == 1) {
-    return 0; // Not taken
-  }
-  else {
-    return 1; // Taken
-  }
-}
-
-bool isBimodalTwoBitPredictionCorrect(int *bimodal_bit_table, int index, string behavior) {
-  if(getBimodalTwoBitPrediction(bimodal_bit_table, index) == 0 && behavior == "NT") {
-    return true;
-  }
-  else if(getBimodalTwoBitPrediction(bimodal_bit_table, index) == 1 && behavior == "T") {
-    return true;
-  }
- 
-  return false;
-}
-
-void updateBimodalTwoBitTable(int *bimodal_bit_table, int index, string behavior) {
-  // 00: Strongly not taken
-  // 01: Weakly not taken
-  // 10: Weakly taken
-  // 11: Strongly taken
-  if(behavior == "T") {
-    if(bimodal_bit_table[index] == STRONGLY_NOT_TAKEN) { // 
-      bimodal_bit_table[index] = WEAKLY_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == WEAKLY_NOT_TAKEN) {
-      bimodal_bit_table[index] = WEAKLY_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == WEAKLY_TAKEN) {
-      bimodal_bit_table[index] = STRONGLY_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == STRONGLY_TAKEN) {
-      bimodal_bit_table[index] =  STRONGLY_TAKEN;
-    }
-  }
-  
-  
-  if(behavior == "NT") {
-    if(bimodal_bit_table[index] == STRONGLY_NOT_TAKEN) {
-      bimodal_bit_table[index] =  STRONGLY_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == WEAKLY_NOT_TAKEN) {
-      bimodal_bit_table[index] = STRONGLY_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == WEAKLY_TAKEN) {
-      bimodal_bit_table[index] = WEAKLY_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == STRONGLY_TAKEN) {
-      bimodal_bit_table[index] = WEAKLY_TAKEN;
-    }
-  }
-}
-
-
-void updateBimodalThreeBitTable(int *bimodal_bit_table, int index, string behavior) {
-  if(behavior == "T") {
-    if(bimodal_bit_table[index] == THREE_STRONGLY_TAKEN) { 
-      bimodal_bit_table[index] = THREE_STRONGLY_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_TAKEN) {
-      bimodal_bit_table[index] = THREE_STRONGLY_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_WEAKLY_TAKEN) {
-      bimodal_bit_table[index] = THREE_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_STRONGLY_NOT_TAKEN) {
-      bimodal_bit_table[index] = THREE_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_NOT_TAKEN) {
-      bimodal_bit_table[index] = THREE_WEAKLY_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_WEAKLY_NOT_TAKEN) {
-      bimodal_bit_table[index] = THREE_WEAKLY_TAKEN;
-    }
-  }
-  
-  if (behavior == "NT") {
-    if(bimodal_bit_table[index] == THREE_STRONGLY_TAKEN) {
-      bimodal_bit_table[index] = THREE_TAKEN;
-    }
-    // This one is not symmetric, we need to handle it differently
-    // based ont the definition in the doc.
-    else if(bimodal_bit_table[index] == THREE_TAKEN) {
-      bimodal_bit_table[index] = THREE_WEAKLY_NOT_TAKEN; /// As defined in the doc
-    }
-    else if(bimodal_bit_table[index] == THREE_WEAKLY_TAKEN) {
-      bimodal_bit_table[index] = THREE_WEAKLY_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_STRONGLY_NOT_TAKEN) {
-      bimodal_bit_table[index] = THREE_STRONGLY_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_NOT_TAKEN) {
-      bimodal_bit_table[index] = THREE_STRONGLY_NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_WEAKLY_NOT_TAKEN) {
-      bimodal_bit_table[index] = THREE_NOT_TAKEN;
-    }
-  }
-  
-}
-
-int getBimodalThreeBitPrediction(int *bimodal_bit_table, int index) {
-   if(bimodal_bit_table[index] == THREE_STRONGLY_TAKEN) { // 
-      return TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_TAKEN) {
-      return TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_WEAKLY_TAKEN) {
-      return TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_STRONGLY_NOT_TAKEN) {
-      return NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_NOT_TAKEN) {
-      return NOT_TAKEN;
-    }
-    else if(bimodal_bit_table[index] == THREE_WEAKLY_NOT_TAKEN) {
-      return NOT_TAKEN;
-    }
-    return NOT_TAKEN;
-}
-
-
-bool isBimodalThreeBitPredictionCorrect(int *bimodal_bit_table, int index, string behavior) {
-  if(getBimodalThreeBitPrediction(bimodal_bit_table, index) == NOT_TAKEN && behavior == "NT") {
-    return true;
-  }
-  else if(getBimodalThreeBitPrediction(bimodal_bit_table, index) == TAKEN && behavior == "T") {
-    return true;
-  }
-  return false;
-}
 
 
 int main(int argc, char *argv[]) {
@@ -238,8 +76,9 @@ int main(int argc, char *argv[]) {
 
   ////////////////////////////////////////////
   // Bimodal single bit predictor
-  int bimodal_single_bit_correct = 0;
-  int bimodal_single_bit_branch_count = 0;
+  BimodalSingleBitPredictor bsbp;
+  bsbp.correctCount = 0;
+  bsbp.branchCount = 0;
 
   // Creat table of table_size entries and intialize to 0 meaning not taken
   int max_table_size = MAX_TABLE_SIZE;
@@ -250,8 +89,7 @@ int main(int argc, char *argv[]) {
   // Bimodal single bit predictor
   for(int size_index = 0; size_index <7; size_index++) {
 
-      bimodal_single_bit_correct = 0;
-      bimodal_single_bit_branch_count = 0;
+      bsbp.resetCounters();
     
       // Initialize the table
       int table_size = sizes[size_index];
@@ -262,21 +100,21 @@ int main(int argc, char *argv[]) {
       infile.clear();
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
-        bimodal_single_bit_branch_count++;
+        bsbp.branchCount++;
 
         // Get the index of the table
         int index = addr % table_size;
 
-        if(isBimodalSingleBitPredictionCorrect(bimodal_bit_table, index, behavior)) {
-          bimodal_single_bit_correct++;
+        if(bsbp.isCorrectPrediction(bimodal_bit_table, index, behavior)) {
+          bsbp.correctCount++;
         }
        
-        updateBimodalSingleBitTable(bimodal_bit_table, index, behavior);
+        bsbp.updateTable(bimodal_bit_table, index, behavior);
 
       }
 
-      outfile << bimodal_single_bit_correct << "," << bimodal_single_bit_branch_count << ";" ;
-      cout    << bimodal_single_bit_correct << "," << bimodal_single_bit_branch_count << ";" ;
+      outfile << bsbp.correctCount << "," << bsbp.branchCount << ";" ;
+      cout    << bsbp.correctCount << "," << bsbp.branchCount << ";" ;
 
       // we need to print a space after every output except the last one
       if(size_index != 6) {
@@ -290,13 +128,11 @@ int main(int argc, char *argv[]) {
 
   ////////////////////////////////////////////
   // Bimodal two bit predictor
-  int bimodal_two_bit_correct = 0;
-  int bimodal_two_bit_branch_count = 0;
-
+  BimodalTwoBitPredictor b2bp;
+  
   for(int size_index = 0; size_index <7; size_index++) {
 
-      bimodal_two_bit_correct = 0;
-      bimodal_two_bit_branch_count = 0;
+      b2bp.resetCounters();
     
       // Initialize the table
       int table_size = sizes[size_index];
@@ -307,21 +143,21 @@ int main(int argc, char *argv[]) {
       infile.clear();
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
-        bimodal_two_bit_branch_count++;
+        b2bp.branchCount++;
 
         // Get the index of the table
         int index = addr % table_size;
 
-        if(isBimodalTwoBitPredictionCorrect(bimodal_bit_table, index, behavior)) {
-          bimodal_two_bit_correct++;
+        if(b2bp.isCorrectPrediction(bimodal_bit_table, index, behavior)) {
+            b2bp.correctCount++;
         }
        
-        updateBimodalTwoBitTable(bimodal_bit_table, index, behavior);
+        b2bp.updateTable(bimodal_bit_table, index, behavior);
 
       }
 
-      outfile << bimodal_two_bit_correct << "," << bimodal_two_bit_branch_count << ";" ;
-      cout    << bimodal_two_bit_correct << "," << bimodal_two_bit_branch_count << ";" ;
+      outfile << b2bp.correctCount << "," << b2bp.branchCount << ";" ;
+      cout    << b2bp.correctCount << "," << b2bp.branchCount << ";" ;
 
       // we need to print a space after every output except the last one
       if(size_index != 6) {
@@ -337,13 +173,11 @@ int main(int argc, char *argv[]) {
 
   ////////////////////////////////////////////
   // Bimodal three bit predictor
-  int bimodal_three_bit_correct = 0;
-  int bimodal_three_bit_branch_count = 0;
+    BimodalThreeBitPredictor b3bp;
+  
+    for(int size_index = 0; size_index <7; size_index++) {
 
-  for(int size_index = 0; size_index <7; size_index++) {
-
-      bimodal_three_bit_correct = 0;
-      bimodal_three_bit_branch_count = 0;
+      b3bp.resetCounters();
     
       // Initialize the table
       int table_size = sizes[size_index];
@@ -354,21 +188,21 @@ int main(int argc, char *argv[]) {
       infile.clear();
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
-        bimodal_three_bit_branch_count++;
+        b3bp.branchCount++;
 
         // Get the index of the table
         int index = addr % table_size;
 
-        if(isBimodalThreeBitPredictionCorrect(bimodal_bit_table, index, behavior)) {
-          bimodal_three_bit_correct++;
+        if(b3bp.isCorrectPrediction(bimodal_bit_table, index, behavior)) {
+            b3bp.correctCount++;
         }
        
-        updateBimodalThreeBitTable(bimodal_bit_table, index, behavior);
+        b3bp.updateTable(bimodal_bit_table, index, behavior);
 
       }
 
-      outfile << bimodal_three_bit_correct << "," << bimodal_three_bit_branch_count << ";" ;
-      cout    << bimodal_three_bit_correct << "," << bimodal_three_bit_branch_count << ";" ;
+      outfile << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
+      cout    << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
 
       // we need to print a space after every output except the last one
       if(size_index != 6) {
