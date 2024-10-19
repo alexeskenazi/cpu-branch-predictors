@@ -8,6 +8,7 @@
 #include "BimodalThreeBitPredictor.h"
 #include "GsharePredictor.h"
 #include "TournamentPredictor.h"
+#include "AlwaysTakenPredictor.h"
 
 using namespace std;
 
@@ -45,18 +46,25 @@ int main(int argc, char *argv[]) {
 
   ////////////////////////////////////////////
   // Always taken predictor
-  // Always taken predictor
-  int always_taken_predictor_correct = 0;
-  int always_taken_predictor_branch_count = 0;
-  while (infile >> std::hex >> addr >> behavior) {
-    always_taken_predictor_branch_count++;
-    if (behavior == "T") {
-      always_taken_predictor_correct++;
-    } 
-  }
 
-  outfile << always_taken_predictor_correct << "," << always_taken_predictor_branch_count << ";" << endl;
-  cout    << always_taken_predictor_correct << "," << always_taken_predictor_branch_count << ";" << endl;
+  AlwaysTakenPredictor atp;
+  atp.reset();
+
+  infile.clear();
+  infile.seekg(0, ios::beg);
+  while (infile >> std::hex >> addr >> behavior) {
+    atp.branchCount++;
+    int actualBranch = behavior == "T";
+    int prediction = atp.getPrediction(addr);
+    if(atp.isCorrectPrediction(prediction, actualBranch)) {
+      atp.correctCount++;
+    }
+    
+    atp.updatePredictor(addr, actualBranch);
+  }
+  outfile << atp.correctCount << "," << atp.branchCount << ";" << endl;
+  cout    << atp.correctCount << "," << atp.branchCount << ";" << endl;
+
 
 
   ////////////////////////////////////////////
