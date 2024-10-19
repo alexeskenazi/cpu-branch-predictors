@@ -1,63 +1,36 @@
 #pragma once
 #include <string>
-#include "predictors.h"
+#include "PredictorBase.h"
 #include "BinaryToStringUtil.h"
 
 using namespace std;
 
-class GsharePredictor {
+class GsharePredictor: public PredictorBase {
 
     public:
-      GsharePredictor();
-      void setTableSize(int size);
       void setGhrBitCount(int size);
       void reset();
       unsigned int getIndex(unsigned long long addr);
       int getPrediction(unsigned long long addr);
-      bool isCorrectPrediction(int prediction, int actualBranch);
       void updatePredictor(unsigned long long addr, int actualBranch);
       void updateGHR(bool actualBranch);
       int getTwobitSaturatedCounterNextValue(int currentState,bool actualBranch);
-      int correctCount;
-      int branchCount;
       int bit_count;
       unsigned int GHR;
-    private:
-       int table[MAX_TABLE_SIZE];
-       int table_size;
 };
-
-GsharePredictor::GsharePredictor() {
-    reset();
-}
-
-void GsharePredictor::setTableSize(int size) {
-  // table_size = size;
-}
-
 
 void GsharePredictor::setGhrBitCount(int size) {
   bit_count = size;
 }
 
 void GsharePredictor::reset() {
-    correctCount = 0;
-    branchCount = 0;
-    // The global history register should be initialized to one (where 0=NT and 1=T). 
-    // For example, for 2bits history register, it’s 01, for 5bits, it’s 00001, for 10bits it’s 0000000001. 
+    PredictorBase::reset();
     GHR = TAKEN; 
-    for(int i = 0; i < MAX_TABLE_SIZE; i++) {
-      table[i] = STRONGLY_NOT_TAKEN;
-    }
 }
 
 unsigned int GsharePredictor::getIndex(unsigned long long addr) {
   bool debug = false;
-
-  // addr = 0xAAAAAAAA;
   
-  // GHR =  (1 << bit_count) - 1;
-  // Extract the least significant 12 bits of the PC  (12-bit index)
   if(debug) {
     cout << "getIndex" << endl;
     cout << "-----GHR: "  << intToBinaryString(GHR) << endl;
@@ -112,7 +85,7 @@ int GsharePredictor::getPrediction(unsigned long long addr){
     bool debug = false;
 
     unsigned int index = getIndex(addr);
-    unsigned int sat_counter = table[index];
+    unsigned int sat_counter = history_table[index];
     if(debug) {
       cout << "getPrediction" << endl;
       cout << "addr:    " << intToBinaryString(addr) << endl;
@@ -138,10 +111,6 @@ int GsharePredictor::getPrediction(unsigned long long addr){
     return prediction;
 }
 
-bool GsharePredictor::isCorrectPrediction(int prediction, int actualBranch) {
-  return (prediction == actualBranch);
-}
-
 void GsharePredictor::updatePredictor(unsigned long long addr, int actualBranch) {
   bool debug = false;
   if(debug) {
@@ -150,12 +119,12 @@ void GsharePredictor::updatePredictor(unsigned long long addr, int actualBranch)
     cout << "behavior:" << actualBranch << endl;
   }
   unsigned int index = getIndex(addr);
-  int currentState = table[index];
+  int currentState = history_table[index];
   int nextState = getTwobitSaturatedCounterNextValue(currentState, actualBranch);
-  table[index] = nextState;
+  history_table[index] = nextState;
   if(debug) {
     cout << "index:   " << index << endl;
-    cout << "table:   " << intToBinaryString(table[index]) << endl;
+    cout << "table:   " << intToBinaryString(history_table[index]) << endl;
   }
   updateGHR(actualBranch);
 }
@@ -180,8 +149,6 @@ void GsharePredictor::updateGHR(bool actualBranch) {
       cout << "GHR:      " << intToBinaryString(GHR) << endl;
     }
 }
-
-
 
 int GsharePredictor::getTwobitSaturatedCounterNextValue(int currentState, bool actualBranch) {
     // 00: Strongly not taken

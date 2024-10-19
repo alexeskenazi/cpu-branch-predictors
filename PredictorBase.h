@@ -16,8 +16,8 @@ class PredictorBase {
       void updatePredictor(unsigned long long addr, int actualBranch);
       int correctCount;
       int branchCount;
-    private:
-       int bimodal_bit_table[MAX_TABLE_SIZE];
+    protected:
+       int history_table[MAX_TABLE_SIZE];
        int table_size;
 };
 
@@ -33,7 +33,7 @@ void PredictorBase::reset() {
     correctCount = 0;
     branchCount = 0;
     for(int i = 0; i < MAX_TABLE_SIZE; i++) {
-      bimodal_bit_table[i] = 0;
+      history_table[i] = 0;
     }
 }
 
@@ -43,7 +43,7 @@ unsigned int PredictorBase::getIndex(unsigned long long addr) {
 
 int PredictorBase::getPrediction(unsigned long long addr){
   unsigned int index = getIndex(addr);
-  return bimodal_bit_table[index];
+  return history_table[index];
 }
 
 bool PredictorBase::isCorrectPrediction(int prediction, int actualBranch) {
@@ -52,5 +52,5 @@ bool PredictorBase::isCorrectPrediction(int prediction, int actualBranch) {
 
 void PredictorBase::updatePredictor(unsigned long long addr, int actualBranch) {
   unsigned int index = getIndex(addr);
-  bimodal_bit_table[index] = actualBranch;
+  history_table[index] = actualBranch;
 }

@@ -3,13 +3,13 @@
 #include<sstream>
 #include<string>
 #include "predictors.h"
+#include "AlwaysTakenPredictor.h"
+#include "AlwaysNotTakenPredictor.h"
 #include "BimodalSingleBitPredictor.h"
 #include "BimodalTwoBitPredictor.h"
 #include "BimodalThreeBitPredictor.h"
 #include "GsharePredictor.h"
 #include "TournamentPredictor.h"
-#include "AlwaysTakenPredictor.h"
-#include "AlwaysNotTakenPredictor.h"
 
 using namespace std;
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
 
   ////////////////////////////////////////////
   // Creat table of table_size entries and intialize to 0 meaning not taken
-  int bimodal_bit_table[MAX_TABLE_SIZE] = {0};
+  int history_table[MAX_TABLE_SIZE] = {0};
 
   int sizes[7] = {4, 8, 32, 64, 256, 1024, 4096};
 
