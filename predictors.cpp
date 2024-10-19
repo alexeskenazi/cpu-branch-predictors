@@ -258,8 +258,56 @@ if(true) {
   cout    << endl;
 
 
+  ////////////////////////////////////////////
+  // Tournament bit predictor
+
+  // cout << "Tournament  bit predictor" << endl;
+
+  // Tournament setup
+  // From the prompt:
+  // •	Furthermore, configure the selector table with 4096 entries
+  TournamentPredictor tp;
+  tp.setTableSize(MAX_TABLE_SIZE);
+  tp.reset();
+
+  // Gshare setup
+  // From the prompt:
+  // •	Configure Gshare with 4096-entry table and 12 bits of global history
+  // •	Initialize the global history register will all zeroes. 
+  GsharePredictor tp_gshare;
+  tp_gshare.setTableSize(MAX_TABLE_SIZE);
+  tp_gshare.reset();
+  tp_gshare.setGhrBitCount(12);
+  tp_gshare.GHR = 0;
+
+  // Bimodal setup
+  // From the prompt:
+  // •	configure bimodal predictor with a 4096-entry table. 
+  BimodalThreeBitPredictor tp_bimodal;
+  tp_bimodal.setTableSize(MAX_TABLE_SIZE);
+  tp_bimodal.reset();
 
 
+  infile.clear();
+  infile.seekg(0, ios::beg);
+  while (infile >> std::hex >> addr >> behavior) {
+    
+    tp.branchCount++;
+    int actualBranch = behavior == "T";
+
+    int prediction = tp.getPrediction(addr);
+    if(tp.isCorrectPrediction(prediction, actualBranch)) {
+      tp.correctCount++;
+    }
+
+    tp.updatePredictor(addr, actualBranch);
+  }
+
+  outfile << tp.correctCount << "," << tp.branchCount << ";" ;
+  cout    << tp.correctCount << "," << tp.branchCount << ";" ;
+
+  outfile << endl;
+  cout    << endl;
 
 
   // Close the input and output files
