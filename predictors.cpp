@@ -9,6 +9,7 @@
 #include "GsharePredictor.h"
 #include "TournamentPredictor.h"
 #include "AlwaysTakenPredictor.h"
+#include "AlwaysNotTakenPredictor.h"
 
 using namespace std;
 
@@ -69,20 +70,23 @@ int main(int argc, char *argv[]) {
 
   ////////////////////////////////////////////
   // Always not taken predictor
-  // Always not taken predictor
-  int always_not_taken_predictor_correct = 0;
-  int always_not_taken_predictor_branch_count = 0;
+  AlwaysNotTakenPredictor antp;
+  antp.reset();
+
   infile.clear();
   infile.seekg(0, ios::beg);
   while (infile >> std::hex >> addr >> behavior) {
-    always_not_taken_predictor_branch_count++;
-    if (behavior == "NT") {
-      always_not_taken_predictor_correct++;
-    } 
+    antp.branchCount++;
+    int actualBranch = behavior == "T";
+    int prediction = antp.getPrediction(addr);
+    if(antp.isCorrectPrediction(prediction, actualBranch)) {
+      antp.correctCount++;
+    }
+    
+    antp.updatePredictor(addr, actualBranch);
   }
-  
-  outfile << always_not_taken_predictor_correct << "," << always_not_taken_predictor_branch_count << ";" << endl;
-  cout    << always_not_taken_predictor_correct << "," << always_not_taken_predictor_branch_count << ";" << endl;
+  outfile << antp.correctCount << "," << antp.branchCount << ";" << endl;
+  cout    << antp.correctCount << "," << antp.branchCount << ";" << endl;
 
 
   ////////////////////////////////////////////
