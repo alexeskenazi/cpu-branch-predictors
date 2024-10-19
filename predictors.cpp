@@ -83,6 +83,7 @@ int main(int argc, char *argv[]) {
 
   int sizes[7] = {4, 8, 32, 64, 256, 1024, 4096};
 
+if(true) {
   ////////////////////////////////////////////
   // Bimodal single bit predictor
   BimodalSingleBitPredictor b1bp;
@@ -104,7 +105,7 @@ int main(int argc, char *argv[]) {
           b1bp.correctCount++;
         }
        
-        b1bp.updateTable(addr, behavior);
+        b1bp.updatePredictor(addr, behavior);
       }
 
       outfile << b1bp.correctCount << "," << b1bp.branchCount << ";" ;
@@ -119,7 +120,9 @@ int main(int argc, char *argv[]) {
   }
   outfile << endl;
   cout    << endl;
+}
 
+if(true) {
   ////////////////////////////////////////////
   // Bimodal two bit predictor
   BimodalTwoBitPredictor b2bp;
@@ -140,7 +143,7 @@ int main(int argc, char *argv[]) {
           b2bp.correctCount++;
         }
        
-        b2bp.updateTable(addr, behavior);
+        b2bp.updatePredictor(addr, behavior);
       }
 
       outfile << b2bp.correctCount << "," << b2bp.branchCount << ";" ;
@@ -155,67 +158,75 @@ int main(int argc, char *argv[]) {
   }
   outfile << endl;
   cout    << endl;
+}
   
+if(true) {
+    ////////////////////////////////////////////
+    // Bimodal three bit predictor
+      BimodalThreeBitPredictor b3bp;
+      
+    for(int size_index = 0; size_index <7; size_index++) {
 
-  ////////////////////////////////////////////
-  // Bimodal three bit predictor
-    BimodalThreeBitPredictor b3bp;
-    
-  for(int size_index = 0; size_index <7; size_index++) {
+        int table_size = sizes[size_index];
+        b3bp.setTableSize(table_size);
+        b3bp.reset();
 
-      int table_size = sizes[size_index];
-      b3bp.setTableSize(table_size);
-      b3bp.reset();
+        infile.clear();
+        infile.seekg(0, ios::beg);
+        while (infile >> std::hex >> addr >> behavior) {
+          b3bp.branchCount++;
 
-      infile.clear();
-      infile.seekg(0, ios::beg);
-      while (infile >> std::hex >> addr >> behavior) {
-        b3bp.branchCount++;
-
-        int prediction = b3bp.getPrediction(addr);
-        if(b3bp.isCorrectPrediction(prediction, behavior)) {
-          b3bp.correctCount++;
+          int prediction = b3bp.getPrediction(addr);
+          if(b3bp.isCorrectPrediction(prediction, behavior)) {
+            b3bp.correctCount++;
+          }
+          
+          b3bp.updatePredictor(addr, behavior);
         }
-       
-        b3bp.updateTable(addr, behavior);
-      }
 
-      outfile << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
-      cout    << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
+        outfile << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
+        cout    << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
 
-      // we need to print a space after every output except the last one
-      if(size_index != 6) {
-        outfile << " ";
-        cout    << " ";
-      }
+        // we need to print a space after every output except the last one
+        if(size_index != 6) {
+          outfile << " ";
+          cout    << " ";
+        }
 
-  }
-  outfile << endl;
-  cout    << endl;
-  
+    }
+    outfile << endl;
+    cout    << endl;
+}
 
   ////////////////////////////////////////////
-  // Gshare three bit predictor
+  // Gshare bit predictor
 
-  cout << "Gshare three bit predictor" << endl;
+  // cout << "Gshare  bit predictor" << endl;
   GsharePredictor gshare;
+
+  int bits_lower_bound = 2;// 2;
+  int bits_upper_bound = 12;// 12;
     
-  for(int bits = 2; bits <=12; bits++) {
+  for(int bits = bits_lower_bound; bits <=bits_upper_bound; bits++) {
 
       gshare.setTableSize(MAX_TABLE_SIZE);
       gshare.reset();
+      gshare.setGhrBitCount(bits);
 
       infile.clear();
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
-        gshare.branchCount++;
+        // if(addr == 0x0040d89c && gshare.branchCount<5) {
+        
+          gshare.branchCount++;
 
-        int prediction = gshare.getPrediction(addr);
-        if(gshare.isCorrectPrediction(prediction, behavior)) {
-          gshare.correctCount++;
-        }
+          int prediction = gshare.getPrediction(addr);
+          if(gshare.isCorrectPrediction(prediction, behavior)) {
+            gshare.correctCount++;
+          }
 
-        gshare.updateTable(addr, behavior);
+          gshare.updatePredictor(addr, behavior);
+        // }
       }
 
       outfile << gshare.correctCount << "," << gshare.branchCount << ";" ;

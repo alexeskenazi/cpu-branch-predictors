@@ -10,10 +10,10 @@ class BimodalSingleBitPredictor {
       BimodalSingleBitPredictor();
       void setTableSize(int size);
       void reset();
-      int getIndex(unsigned long long addr);
+      unsigned int getIndex(unsigned long long addr);
       int getPrediction(unsigned long long addr);
       bool isCorrectPrediction(int prediction, string behavior);
-      void updateTable(unsigned long long addr, string behavior);
+      void updatePredictor(unsigned long long addr, string behavior);
       int correctCount;
       int branchCount;
     private:
@@ -26,7 +26,7 @@ BimodalSingleBitPredictor::BimodalSingleBitPredictor() {
 }
 
 void BimodalSingleBitPredictor::setTableSize(int size) {
-  this->table_size = size;
+  table_size = size;
 }
 
 void BimodalSingleBitPredictor::reset() {
@@ -37,12 +37,12 @@ void BimodalSingleBitPredictor::reset() {
     }
 }
 
-int BimodalSingleBitPredictor::getIndex(unsigned long long addr) {
+unsigned int BimodalSingleBitPredictor::getIndex(unsigned long long addr) {
   return addr % table_size;
 }
 
 int BimodalSingleBitPredictor::getPrediction(unsigned long long addr){
-  int index = getIndex(addr);
+  unsigned int index = getIndex(addr);
   return bimodal_bit_table[index];
 }
 
@@ -58,8 +58,8 @@ bool BimodalSingleBitPredictor::isCorrectPrediction(int prediction, string behav
   return false; 
 }
 
-void BimodalSingleBitPredictor::updateTable(unsigned long long addr, string behavior) {
-  int index = getIndex(addr);
+void BimodalSingleBitPredictor::updatePredictor(unsigned long long addr, string behavior) {
+  unsigned int index = getIndex(addr);
   if(behavior == "T") {
     bimodal_bit_table[index] = TAKEN;
   }

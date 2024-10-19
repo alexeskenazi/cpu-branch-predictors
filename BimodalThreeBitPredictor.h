@@ -10,10 +10,10 @@ class BimodalThreeBitPredictor {
     BimodalThreeBitPredictor();
     void setTableSize(int size);
         void reset();
-      int getIndex(unsigned long long addr);
+      unsigned int getIndex(unsigned long long addr);
         int getPrediction(unsigned long long addr);
         bool isCorrectPrediction(int prediction, string behavior);
-        void updateTable(unsigned long long addr, string behavior);
+        void updatePredictor(unsigned long long addr, string behavior);
         int correctCount;
         int branchCount;
     private:
@@ -26,7 +26,7 @@ BimodalThreeBitPredictor::BimodalThreeBitPredictor() {
 }
 
 void BimodalThreeBitPredictor::setTableSize(int size) {
-  this->table_size = size;
+  table_size = size;
 }
 
 void BimodalThreeBitPredictor::reset() {
@@ -37,12 +37,12 @@ void BimodalThreeBitPredictor::reset() {
     }
 }
 
-int BimodalThreeBitPredictor::getIndex(unsigned long long addr) {
+unsigned  BimodalThreeBitPredictor::getIndex(unsigned long long addr) {
   return addr % table_size;
 }
 
 int BimodalThreeBitPredictor::getPrediction(unsigned long long addr){
-    int index = getIndex(addr);
+    unsigned int index = getIndex(addr);
     if(bimodal_bit_table[index] == THREE_STRONGLY_TAKEN) { // 
       return TAKEN;
     }
@@ -75,8 +75,8 @@ bool BimodalThreeBitPredictor::isCorrectPrediction(int prediction, string behavi
     return false;
 }
 
-void BimodalThreeBitPredictor::updateTable(unsigned long long addr, string behavior) {
-  int index = getIndex(addr);
+void BimodalThreeBitPredictor::updatePredictor(unsigned long long addr, string behavior) {
+  unsigned int index = getIndex(addr);
      if(behavior == "T") {
     if(bimodal_bit_table[index] == THREE_STRONGLY_TAKEN) { 
       bimodal_bit_table[index] = THREE_STRONGLY_TAKEN;

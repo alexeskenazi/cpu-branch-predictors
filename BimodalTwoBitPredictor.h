@@ -10,10 +10,10 @@ class BimodalTwoBitPredictor {
       BimodalTwoBitPredictor();
       void setTableSize(int size);
       void reset();
-      int getIndex(unsigned long long addr);
+      unsigned int getIndex(unsigned long long addr);
       int getPrediction(unsigned long long addr);
       bool isCorrectPrediction(int prediction, string behavior);
-      void updateTable(unsigned long long addr, string behavior);
+      void updatePredictor(unsigned long long addr, string behavior);
       int correctCount;
       int branchCount;
     private:
@@ -26,7 +26,7 @@ BimodalTwoBitPredictor::BimodalTwoBitPredictor() {
 }
 
 void BimodalTwoBitPredictor::setTableSize(int size) {
-  this->table_size = size;
+  table_size = size;
 }
 
 void BimodalTwoBitPredictor::reset() {
@@ -37,22 +37,22 @@ void BimodalTwoBitPredictor::reset() {
     }
 }
 
-int BimodalTwoBitPredictor::getIndex(unsigned long long addr) {
+unsigned int BimodalTwoBitPredictor::getIndex(unsigned long long addr) {
   return addr % table_size;
 }
 
 int BimodalTwoBitPredictor::getPrediction(unsigned long long addr){
-    int index = getIndex(addr);
+    unsigned int index = getIndex(addr);
 
-    // 00: Strongly not taken
-    // 01: Weakly not taken
-    // 10: Weakly taken
-    // 11: Strongly taken
-    if(bimodal_bit_table[index] == 0 || bimodal_bit_table[index] == 1) {
-        return 0; // Not taken
+    // 00: Strongly not taken -> not taken
+    // 01: Weakly not taken -> not taken
+    // 10: Weakly taken -> taken
+    // 11: Strongly taken -> taken
+    if(bimodal_bit_table[index] == STRONGLY_NOT_TAKEN || bimodal_bit_table[index] == WEAKLY_NOT_TAKEN) {
+        return NOT_TAKEN; // Not taken
     }
     else {
-        return 1; // Taken
+        return TAKEN; // Taken
     }
 }
 
@@ -68,8 +68,8 @@ bool BimodalTwoBitPredictor::isCorrectPrediction(int prediction, string behavior
     return false;
 }
 
-void BimodalTwoBitPredictor::updateTable(unsigned long long addr, string behavior) {
-  int index = getIndex(addr);
+void BimodalTwoBitPredictor::updatePredictor(unsigned long long addr, string behavior) {
+  unsigned int index = getIndex(addr);
     // 00: Strongly not taken
     // 01: Weakly not taken
     // 10: Weakly taken
