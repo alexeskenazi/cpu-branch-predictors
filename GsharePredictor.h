@@ -14,8 +14,8 @@ class GsharePredictor {
       void reset();
       unsigned int getIndex(unsigned long long addr);
       int getPrediction(unsigned long long addr);
-      bool isCorrectPrediction(int prediction, string behavior);
-      void updatePredictor(unsigned long long addr, string behavior);
+      bool isCorrectPrediction(int prediction, int actualBranch);
+      void updatePredictor(unsigned long long addr, int actualBranch);
       void updateGHR(bool actualBranch);
       int getTwobitSaturatedCounterNextValue(int currentState,bool actualBranch);
       int correctCount;
@@ -138,25 +138,17 @@ int GsharePredictor::getPrediction(unsigned long long addr){
     return prediction;
 }
 
-bool GsharePredictor::isCorrectPrediction(int prediction, string behavior) {
-  if(prediction == NOT_TAKEN && behavior == "NT") {
-    return true;
-  }
-  
-  if(prediction == TAKEN && behavior == "T") {
-    return true;
-  }
-  return false; 
+bool GsharePredictor::isCorrectPrediction(int prediction, int actualBranch) {
+  return (prediction == actualBranch);
 }
 
-void GsharePredictor::updatePredictor(unsigned long long addr, string behavior) {
+void GsharePredictor::updatePredictor(unsigned long long addr, int actualBranch) {
   bool debug = false;
   if(debug) {
     cout << "updatePredictor" << endl;
     cout << "addr:    " << intToBinaryString(addr) << endl;
-    cout << "behavior:" << behavior << endl;
+    cout << "behavior:" << actualBranch << endl;
   }
-  int actualBranch = behavior == "T";
   unsigned int index = getIndex(addr);
   int currentState = table[index];
   int nextState = getTwobitSaturatedCounterNextValue(currentState, actualBranch);

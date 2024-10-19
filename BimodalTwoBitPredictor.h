@@ -12,8 +12,8 @@ class BimodalTwoBitPredictor {
       void reset();
       unsigned int getIndex(unsigned long long addr);
       int getPrediction(unsigned long long addr);
-      bool isCorrectPrediction(int prediction, string behavior);
-      void updatePredictor(unsigned long long addr, string behavior);
+      bool isCorrectPrediction(int prediction, int actualBranch);
+      void updatePredictor(unsigned long long addr, int actualBranch);
       int correctCount;
       int branchCount;
     private:
@@ -56,25 +56,17 @@ int BimodalTwoBitPredictor::getPrediction(unsigned long long addr){
     }
 }
 
-bool BimodalTwoBitPredictor::isCorrectPrediction(int prediction, string behavior) {
-    if(prediction == NOT_TAKEN && behavior == "NT") {
-        return true;
-    }
-
-    if(prediction == TAKEN && behavior == "T") {
-        return true;
-    }
-
-    return false;
+bool BimodalTwoBitPredictor::isCorrectPrediction(int prediction, int actualBranch) {
+  return (prediction == actualBranch);
 }
 
-void BimodalTwoBitPredictor::updatePredictor(unsigned long long addr, string behavior) {
+void BimodalTwoBitPredictor::updatePredictor(unsigned long long addr, int actualBranch) {
   unsigned int index = getIndex(addr);
     // 00: Strongly not taken
     // 01: Weakly not taken
     // 10: Weakly taken
     // 11: Strongly taken
-    if(behavior == "T") {
+    if(actualBranch == TAKEN) {
         if(bimodal_bit_table[index] == STRONGLY_NOT_TAKEN) { // 
         bimodal_bit_table[index] = WEAKLY_NOT_TAKEN;
         }
@@ -89,8 +81,7 @@ void BimodalTwoBitPredictor::updatePredictor(unsigned long long addr, string beh
         }
     }
     
-    
-    if(behavior == "NT") {
+    if(actualBranch == NOT_TAKEN) {
         if(bimodal_bit_table[index] == STRONGLY_NOT_TAKEN) {
         bimodal_bit_table[index] =  STRONGLY_NOT_TAKEN;
         }

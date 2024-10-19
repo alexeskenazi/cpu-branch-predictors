@@ -99,13 +99,13 @@ if(true) {
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
         b1bp.branchCount++;
-
+        int actualBranch = behavior == "T";
         int prediction = b1bp.getPrediction(addr);
-        if(b1bp.isCorrectPrediction(prediction, behavior)) {
+        if(b1bp.isCorrectPrediction(prediction, actualBranch)) {
           b1bp.correctCount++;
         }
        
-        b1bp.updatePredictor(addr, behavior);
+        b1bp.updatePredictor(addr, actualBranch);
       }
 
       outfile << b1bp.correctCount << "," << b1bp.branchCount << ";" ;
@@ -137,13 +137,13 @@ if(true) {
       infile.seekg(0, ios::beg);
       while (infile >> std::hex >> addr >> behavior) {
         b2bp.branchCount++;
-
+        int actualBranch = behavior == "T";
         int prediction = b2bp.getPrediction(addr);
-        if(b2bp.isCorrectPrediction(prediction, behavior)) {
+        if(b2bp.isCorrectPrediction(prediction, actualBranch)) {
           b2bp.correctCount++;
         }
        
-        b2bp.updatePredictor(addr, behavior);
+        b2bp.updatePredictor(addr, actualBranch);
       }
 
       outfile << b2bp.correctCount << "," << b2bp.branchCount << ";" ;
@@ -174,14 +174,15 @@ if(true) {
         infile.clear();
         infile.seekg(0, ios::beg);
         while (infile >> std::hex >> addr >> behavior) {
-          b3bp.branchCount++;
+        b3bp.branchCount++;
+        int actualBranch = behavior == "T";
 
           int prediction = b3bp.getPrediction(addr);
-          if(b3bp.isCorrectPrediction(prediction, behavior)) {
+          if(b3bp.isCorrectPrediction(prediction, actualBranch)) {
             b3bp.correctCount++;
           }
           
-          b3bp.updatePredictor(addr, behavior);
+          b3bp.updatePredictor(addr, actualBranch);
         }
 
         outfile << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
@@ -219,13 +220,14 @@ if(true) {
         // if(addr == 0x0040d89c && gshare.branchCount<5) {
         
           gshare.branchCount++;
+        int actualBranch = behavior == "T";
 
           int prediction = gshare.getPrediction(addr);
-          if(gshare.isCorrectPrediction(prediction, behavior)) {
+          if(gshare.isCorrectPrediction(prediction, actualBranch)) {
             gshare.correctCount++;
           }
 
-          gshare.updatePredictor(addr, behavior);
+          gshare.updatePredictor(addr, actualBranch);
         // }
       }
 

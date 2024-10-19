@@ -12,8 +12,8 @@ class BimodalSingleBitPredictor {
       void reset();
       unsigned int getIndex(unsigned long long addr);
       int getPrediction(unsigned long long addr);
-      bool isCorrectPrediction(int prediction, string behavior);
-      void updatePredictor(unsigned long long addr, string behavior);
+      bool isCorrectPrediction(int prediction, int actualBranch);
+      void updatePredictor(unsigned long long addr, int actualBranch);
       int correctCount;
       int branchCount;
     private:
@@ -46,24 +46,11 @@ int BimodalSingleBitPredictor::getPrediction(unsigned long long addr){
   return bimodal_bit_table[index];
 }
 
-bool BimodalSingleBitPredictor::isCorrectPrediction(int prediction, string behavior) {
-
-  if(prediction == NOT_TAKEN && behavior == "NT") {
-    return true;
-  }
-  
-  if(prediction == TAKEN && behavior == "T") {
-    return true;
-  }
-  return false; 
+bool BimodalSingleBitPredictor::isCorrectPrediction(int prediction, int actualBranch) {
+  return (prediction == actualBranch);
 }
 
-void BimodalSingleBitPredictor::updatePredictor(unsigned long long addr, string behavior) {
+void BimodalSingleBitPredictor::updatePredictor(unsigned long long addr, int actualBranch) {
   unsigned int index = getIndex(addr);
-  if(behavior == "T") {
-    bimodal_bit_table[index] = TAKEN;
-  }
-  else {
-    bimodal_bit_table[index] = NOT_TAKEN;
-  }
+  bimodal_bit_table[index] = actualBranch;
 }
