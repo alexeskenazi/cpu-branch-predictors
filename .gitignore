@@ -31,13 +31,23 @@
 *.out
 *.app
 
+# binary files
+predictors
 
 # large files
 traces/long_trace1.txt
 traces/long_trace2.txt
 traces/long_trace3.txt
+
+#temp files
 ~$oject1_Fall24.docx
-long_trace1_output.txt
+
+#output files
 short_trace1_output.txt
-predictors
+short_trace2_output.txt
+short_trace3_output.txt
+long_trace1_output.txt
+long_trace2_output.txt
+long_trace3_output.txt
 output.txt
+
