@@ -1,6 +1,6 @@
 # cs-320-project1-fall24
 
-## CS320 Fall 2024: Project 1 - CPU Branch Prediction Simulation with multiple algorithms
+## CS320 Fall 2024: Project 1 - CPU Branch Prediction Simulation with Multiple Algorithms
 
 **Full Name:** Alex Eskenazi  
 **GitHub ID:** alexeskenazi  
@@ -12,14 +12,14 @@
 
 - See the Project_Fall24.dox for the teacher's prompt.
 _ "sh run_all.sh"  will run for all provided inputs and outputs.
-- "sh pack_files.sh" will package the files for submittion.
-- Noticed that some output files in the `correct_outputs` folder have a newline at the end and some don't. This causes `diff` to fail for some of them.
+- "sh pack_files.sh" will package the files for submission.
+- I noticed that some output files in the `correct_outputs` folder have a newline at the end and some don't. This causes `diff` to fail for some of them.
 - Use: diff -bB to ignore the space and new line differences
 - All tests pass.
 
 ## Overview
 
-The goal of this project is to measure the effectiveness of several branch direction predictors on a number of traces of conditional branch instructions.
+This project aims to measure the effectiveness of several branch direction predictors on a number of traces of conditional branch instructions.
 Each trace contains a large number of branch instructions. Each line in the trace contains the following information for each branch: the program counter (expressed as a word address), the actual outcome of the branch. Several trace files are provided for evaluating your predictor designs.
 
 Predictors Implemented
