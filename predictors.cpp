@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include "predictors.h"
 #include "AlwaysTakenPredictor.h"
 #include "AlwaysNotTakenPredictor.h"
@@ -32,6 +33,7 @@ int main(int argc, char *argv[]) {
 
   // Temporary variables
   unsigned long long addr;
+  int  actualBranch;
   string behavior, line;
 
   // Open file for reading
@@ -48,16 +50,31 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  vector<unsigned long long> addresses;
+  vector<int> behaviors;
+
+  infile.clear();
+  infile.seekg(0, ios::beg);
+  while (infile >> std::hex >> addr >> behavior) {
+    addresses.push_back(addr);
+    behaviors.push_back( behavior == "T");
+  }
+
+  // for(int i = 0; i < addresses.size(); i++) {
+  //   cout << addresses[i] << " " << behaviors[i] << endl;
+  // }
+
+
   ////////////////////////////////////////////
   // Always taken predictor
   AlwaysTakenPredictor atp;
   atp.reset();
 
-  infile.clear();
-  infile.seekg(0, ios::beg);
-  while (infile >> std::hex >> addr >> behavior) {
+  for(int i = 0; i < addresses.size(); i++) {
     atp.branchCount++;
-    int actualBranch = behavior == "T";
+    actualBranch = behaviors[i];
+    addr = addresses[i];
+
     int prediction = atp.getPrediction(addr);
     if (atp.isCorrectPrediction(prediction, actualBranch)) {
       atp.correctCount++;
@@ -72,11 +89,10 @@ int main(int argc, char *argv[]) {
   AlwaysNotTakenPredictor antp;
   antp.reset();
 
-  infile.clear();
-  infile.seekg(0, ios::beg);
-  while (infile >> std::hex >> addr >> behavior) {
+  for(int i = 0; i < addresses.size(); i++) {
     antp.branchCount++;
-    int actualBranch = behavior == "T";
+    actualBranch = behaviors[i];
+    addr = addresses[i];
     int prediction = antp.getPrediction(addr);
     if (antp.isCorrectPrediction(prediction, actualBranch)) {
       antp.correctCount++;
@@ -102,11 +118,10 @@ int main(int argc, char *argv[]) {
       b1bp.setTableSize(table_size);
       b1bp.reset();
 
-      infile.clear();
-      infile.seekg(0, ios::beg);
-      while (infile >> std::hex >> addr >> behavior) {
+      for(int i = 0; i < addresses.size(); i++) {
         b1bp.branchCount++;
-        int actualBranch = behavior == "T";
+        actualBranch = behaviors[i];
+        addr = addresses[i];
         int prediction = b1bp.getPrediction(addr);
         if (b1bp.isCorrectPrediction(prediction, actualBranch)) {
           b1bp.correctCount++;
@@ -136,11 +151,10 @@ int main(int argc, char *argv[]) {
       b2bp.setTableSize(table_size);
       b2bp.reset();
 
-      infile.clear();
-      infile.seekg(0, ios::beg);
-      while (infile >> std::hex >> addr >> behavior) {
+      for(int i = 0; i < addresses.size(); i++) {
         b2bp.branchCount++;
-        int actualBranch = behavior == "T";
+        actualBranch = behaviors[i];
+        addr = addresses[i];
         int prediction = b2bp.getPrediction(addr);
         if (b2bp.isCorrectPrediction(prediction, actualBranch)) {
           b2bp.correctCount++;
@@ -170,11 +184,10 @@ int main(int argc, char *argv[]) {
       b3bp.setTableSize(table_size);
       b3bp.reset();
 
-      infile.clear();
-      infile.seekg(0, ios::beg);
-      while (infile >> std::hex >> addr >> behavior) {
+     for(int i = 0; i < addresses.size(); i++) {
         b3bp.branchCount++;
-        int actualBranch = behavior == "T";
+        actualBranch = behaviors[i];
+        addr = addresses[i];
 
         int prediction = b3bp.getPrediction(addr);
         if (b3bp.isCorrectPrediction(prediction, actualBranch)) {
@@ -208,11 +221,10 @@ int main(int argc, char *argv[]) {
       gshare.reset();
       gshare.setGhrBitCount(bits);
 
-      infile.clear();
-      infile.seekg(0, ios::beg);
-      while (infile >> std::hex >> addr >> behavior) {
+      for(int i = 0; i < addresses.size(); i++) {
         gshare.branchCount++;
-        int actualBranch = behavior == "T";
+        actualBranch = behaviors[i];
+        addr = addresses[i];
 
         int prediction = gshare.getPrediction(addr);
         if (gshare.isCorrectPrediction(prediction, actualBranch)) {
@@ -254,11 +266,10 @@ int main(int argc, char *argv[]) {
     tp_3bit_bimodal.setInitiaHistoryTablelValue(THREE_STRONGLY_NOT_TAKEN);
     tp_3bit_bimodal.reset();
 
-    infile.clear();
-    infile.seekg(0, ios::beg);
-    while (infile >> std::hex >> addr >> behavior) {
+    for(int i = 0; i < addresses.size(); i++) {
       tp.branchCount++;
-      int actualBranch = behavior == "T";
+      actualBranch = behaviors[i];
+      addr = addresses[i];
       bool gshareCorrect = false;
       bool bimodalCorrect = false;
 
