@@ -17,6 +17,8 @@ bool enableBimodalPredictors = true;
 bool enableGsharePredictor = true;
 bool enableTournamentPredictor = true;
 
+bool doCout = false;
+
 int main(int argc, char *argv[]) {
   // Check if the correct number of arguments are provided
   if (argc != 3) {
@@ -63,7 +65,7 @@ int main(int argc, char *argv[]) {
     atp.updatePredictor(addr, actualBranch);
   }
   outfile << atp.correctCount << "," << atp.branchCount << ";" << endl;
-  cout << atp.correctCount << "," << atp.branchCount << ";" << endl;
+  if (doCout) cout << atp.correctCount << "," << atp.branchCount << ";" << endl;
 
   ////////////////////////////////////////////
   // Always not taken predictor
@@ -82,7 +84,7 @@ int main(int argc, char *argv[]) {
     antp.updatePredictor(addr, actualBranch);
   }
   outfile << antp.correctCount << "," << antp.branchCount << ";" << endl;
-  cout << antp.correctCount << "," << antp.branchCount << ";" << endl;
+  if (doCout) cout << antp.correctCount << "," << antp.branchCount << ";" << endl;
 
   ////////////////////////////////////////////
   // Creat table of table_size entries and intialize to 0 meaning not taken
@@ -113,15 +115,15 @@ int main(int argc, char *argv[]) {
       }
 
       outfile << b1bp.correctCount << "," << b1bp.branchCount << ";";
-      cout << b1bp.correctCount << "," << b1bp.branchCount << ";";
+      if (doCout) cout << b1bp.correctCount << "," << b1bp.branchCount << ";";
 
       if (size_index != 6) {
         outfile << " ";
-        cout << " ";
+        if (doCout) cout << " ";
       }
     }
     outfile << endl;
-    cout << endl;
+    if (doCout) cout << endl;
   }
 
   if (enableBimodalPredictors) {
@@ -147,15 +149,15 @@ int main(int argc, char *argv[]) {
       }
 
       outfile << b2bp.correctCount << "," << b2bp.branchCount << ";";
-      cout << b2bp.correctCount << "," << b2bp.branchCount << ";";
+      if (doCout) cout << b2bp.correctCount << "," << b2bp.branchCount << ";";
 
       if (size_index != 6) {
         outfile << " ";
-        cout << " ";
+        if (doCout) cout << " ";
       }
     }
     outfile << endl;
-    cout << endl;
+    if (doCout) cout << endl;
   }
 
   if (enableBimodalPredictors) {
@@ -182,15 +184,15 @@ int main(int argc, char *argv[]) {
       }
 
       outfile << b3bp.correctCount << "," << b3bp.branchCount << ";";
-      cout << b3bp.correctCount << "," << b3bp.branchCount << ";";
+      if (doCout) cout << b3bp.correctCount << "," << b3bp.branchCount << ";";
 
       if (size_index != 6) {
         outfile << " ";
-        cout << " ";
+        if (doCout) cout << " ";
       }
     }
     outfile << endl;
-    cout << endl;
+    if (doCout) cout << endl;
   }
 
   if (enableGsharePredictor) {
@@ -220,16 +222,16 @@ int main(int argc, char *argv[]) {
       }
 
       outfile << gshare.correctCount << "," << gshare.branchCount << ";";
-      cout << gshare.correctCount << "," << gshare.branchCount << ";";
+      if (doCout) cout << gshare.correctCount << "," << gshare.branchCount << ";";
 
       if (bits != 12) {
         outfile << " ";
-        cout << " ";
+        if (doCout) cout << " ";
       }
     }
 
     outfile << endl;
-    cout << endl;
+    if (doCout) cout << endl;
   }
 
   if (enableTournamentPredictor) {
@@ -288,13 +290,13 @@ int main(int argc, char *argv[]) {
       tp.updateTournamentPredictor(addr, gshareCorrect, bimodalCorrect);
     }
 
-    cout << "tp_gshare:" << endl;
-    cout << tp_gshare.correctCount << "," << tp_gshare.branchCount << ";" << endl;
-    cout << "tp_3bit_bimodal:" << endl;
-    cout << tp_3bit_bimodal.correctCount << "," << tp_3bit_bimodal.branchCount << ";" << endl;
-    cout << "tp:" << endl;
+    if (doCout) cout << "tp_gshare:" << endl;
+    if (doCout) cout << tp_gshare.correctCount << "," << tp_gshare.branchCount << ";" << endl;
+    if (doCout) cout << "tp_3bit_bimodal:" << endl;
+    if (doCout) cout << tp_3bit_bimodal.correctCount << "," << tp_3bit_bimodal.branchCount << ";" << endl;
+    if (doCout) cout << "tp:" << endl;
     outfile << tp.correctCount << "," << tp.branchCount << ";";
-    cout << tp.correctCount << "," << tp.branchCount << ";";
+    if (doCout) cout << tp.correctCount << "," << tp.branchCount << ";";
 
   }
 
