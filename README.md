@@ -31,9 +31,12 @@ Predicts that every branch is not taken.
 3. Bimodal Predictors:
     - 1-bit Predictor: A simple predictor using 1-bit history for each entry.
     - 2-bit Predictor: A saturating 2-bit counter predictor with four states.
-    - 3-bit Predictor: A more complex predictor with a 6-state machine and 3 bits of history.
+    - 3-bit Predictor: A more complex predictor with a 6-state machine and 3 bits of history. The 3 bit predictor uses the following states for the saturation counter:
+    -     <img width="468" alt="image" src="https://github.com/user-attachments/assets/ac9665a1-228a-4fe9-a481-41d8acdcdf37">
+
 
     The accuracy of the 1-bit, 2-bit, and 3-bit predictors is evaluated with varying table sizes of 4, 8, 32, 64, 256, 1024, and 4096 entries.
+    
 
 5. Gshare Predictor
 Combines the program counter (PC) with a global history register using XOR to index into the predictor table. The history length is varied between 2 and 12 bits.
