@@ -296,8 +296,6 @@ int main(int argc, char *argv[]) {
     outfile << tp.correctCount << "," << tp.branchCount << ";";
     cout << tp.correctCount << "," << tp.branchCount << ";";
 
-    outfile << endl;
-    cout << endl;
   }
 
   // Close the input and output files
