@@ -26,18 +26,18 @@ int TournamentPredictor::getPrediction(unsigned long long addr) {
     int state = history_table[index];
     int prediction = USE_BIMODAL;
 
-    // debug = index == 2204;  // Ucomment to debug a specific index
+    // debug = index == 2204;  // Uncomment to debug a specific index
 
     if (state == STRONGLY_GSHARE || state == WEAKLY_GSHARE) {
         prediction = USE_GSHARE;
     } else {
         prediction = USE_BIMODAL;
     }
-    if(debug) {
+    if (debug) {
         cout << "getPrediction" << endl;
         cout << "   index: " << index << endl;
         cout << "   state: " << state << endl;
-        cout << "   prediction: " << (prediction==USE_GSHARE ? "Gshare" : "Bimodal") << endl;
+        cout << "   prediction: " << (prediction == USE_GSHARE ? "Gshare" : "Bimodal") << endl;
     }
 
     return prediction;
@@ -52,11 +52,10 @@ void TournamentPredictor::updateTournamentPredictor(unsigned long long addr, boo
     int currentState = history_table[index];
     
     bool debug = false;
-    // debug = index == 2204;  // Ucomment to debug a specific index
+    // debug = index == 2204;  // Uncomment to debug a specific index
     if (debug) {
         cout << "  updateTournamentPredictor ----------" << endl;
         cout << "   index: " << index << endl;
-        
     }
 
     if (gshareCorrect == bimodalCorrect) {
@@ -66,7 +65,7 @@ void TournamentPredictor::updateTournamentPredictor(unsigned long long addr, boo
         return;
     }
 
-    if(debug) {
+    if (debug) {
         cout << "  got a winner: " << (gshareCorrect ? "gshare" : "bimodal") << endl;
     }
     
@@ -74,7 +73,7 @@ void TournamentPredictor::updateTournamentPredictor(unsigned long long addr, boo
     history_table[index] = newState;
 
     if (debug) {
-        if(newState != currentState) {
+        if (newState != currentState) {
             cout << "   State: " << currentState << "->" << newState << endl;
         } else {
             cout << "   State: " << currentState << "-> same" << endl;

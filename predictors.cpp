@@ -1,7 +1,7 @@
-#include<iostream>
-#include<fstream>
-#include<sstream>
-#include<string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "predictors.h"
 #include "AlwaysTakenPredictor.h"
 #include "AlwaysNotTakenPredictor.h"
@@ -13,15 +13,11 @@
 
 using namespace std;
 
-
 bool enableBimodalPredictors = true;
 bool enableGsharePredictor = true;
 bool enableTournamentPredictor = true;
 
-
-
 int main(int argc, char *argv[]) {
-
   // Check if the correct number of arguments are provided
   if (argc != 3) {
     cerr << "Usage: " << argv[0] << " <input file> <output file>" << endl;
@@ -50,10 +46,8 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-
   ////////////////////////////////////////////
   // Always taken predictor
-
   AlwaysTakenPredictor atp;
   atp.reset();
 
@@ -63,16 +57,13 @@ int main(int argc, char *argv[]) {
     atp.branchCount++;
     int actualBranch = behavior == "T";
     int prediction = atp.getPrediction(addr);
-    if(atp.isCorrectPrediction(prediction, actualBranch)) {
+    if (atp.isCorrectPrediction(prediction, actualBranch)) {
       atp.correctCount++;
     }
-    
     atp.updatePredictor(addr, actualBranch);
   }
   outfile << atp.correctCount << "," << atp.branchCount << ";" << endl;
-  cout    << atp.correctCount << "," << atp.branchCount << ";" << endl;
-
-
+  cout << atp.correctCount << "," << atp.branchCount << ";" << endl;
 
   ////////////////////////////////////////////
   // Always not taken predictor
@@ -85,15 +76,13 @@ int main(int argc, char *argv[]) {
     antp.branchCount++;
     int actualBranch = behavior == "T";
     int prediction = antp.getPrediction(addr);
-    if(antp.isCorrectPrediction(prediction, actualBranch)) {
+    if (antp.isCorrectPrediction(prediction, actualBranch)) {
       antp.correctCount++;
     }
-    
     antp.updatePredictor(addr, actualBranch);
   }
   outfile << antp.correctCount << "," << antp.branchCount << ";" << endl;
-  cout    << antp.correctCount << "," << antp.branchCount << ";" << endl;
-
+  cout << antp.correctCount << "," << antp.branchCount << ";" << endl;
 
   ////////////////////////////////////////////
   // Creat table of table_size entries and intialize to 0 meaning not taken
@@ -101,14 +90,12 @@ int main(int argc, char *argv[]) {
 
   int sizes[7] = {4, 8, 32, 64, 256, 1024, 4096};
 
-if(enableBimodalPredictors) {
-  ////////////////////////////////////////////
-  // Bimodal single bit predictor
-  BimodalSingleBitPredictor b1bp;
+  if (enableBimodalPredictors) {
+    ////////////////////////////////////////////
+    // Bimodal single bit predictor
+    BimodalSingleBitPredictor b1bp;
 
-  // Bimodal single bit predictor
-  for(int size_index = 0; size_index <7; size_index++) {
-
+    for (int size_index = 0; size_index < 7; size_index++) {
       int table_size = sizes[size_index];
       b1bp.setTableSize(table_size);
       b1bp.reset();
@@ -119,34 +106,30 @@ if(enableBimodalPredictors) {
         b1bp.branchCount++;
         int actualBranch = behavior == "T";
         int prediction = b1bp.getPrediction(addr);
-        if(b1bp.isCorrectPrediction(prediction, actualBranch)) {
+        if (b1bp.isCorrectPrediction(prediction, actualBranch)) {
           b1bp.correctCount++;
         }
-       
         b1bp.updatePredictor(addr, actualBranch);
       }
 
-      outfile << b1bp.correctCount << "," << b1bp.branchCount << ";" ;
-      cout    << b1bp.correctCount << "," << b1bp.branchCount << ";" ;
+      outfile << b1bp.correctCount << "," << b1bp.branchCount << ";";
+      cout << b1bp.correctCount << "," << b1bp.branchCount << ";";
 
-      // we need to print a space after every output except the last one
-      if(size_index != 6) {
+      if (size_index != 6) {
         outfile << " ";
-        cout    << " ";
+        cout << " ";
       }
-
+    }
+    outfile << endl;
+    cout << endl;
   }
-  outfile << endl;
-  cout    << endl;
-}
 
-if(enableBimodalPredictors) {
-  ////////////////////////////////////////////
-  // Bimodal two bit predictor
-  BimodalTwoBitPredictor b2bp;
+  if (enableBimodalPredictors) {
+    ////////////////////////////////////////////
+    // Bimodal two bit predictor
+    BimodalTwoBitPredictor b2bp;
 
-  for(int size_index = 0; size_index <7; size_index++) {
-
+    for (int size_index = 0; size_index < 7; size_index++) {
       int table_size = sizes[size_index];
       b2bp.setTableSize(table_size);
       b2bp.reset();
@@ -157,133 +140,106 @@ if(enableBimodalPredictors) {
         b2bp.branchCount++;
         int actualBranch = behavior == "T";
         int prediction = b2bp.getPrediction(addr);
-        if(b2bp.isCorrectPrediction(prediction, actualBranch)) {
+        if (b2bp.isCorrectPrediction(prediction, actualBranch)) {
           b2bp.correctCount++;
         }
-       
         b2bp.updatePredictor(addr, actualBranch);
       }
 
-      outfile << b2bp.correctCount << "," << b2bp.branchCount << ";" ;
-      cout    << b2bp.correctCount << "," << b2bp.branchCount << ";" ;
+      outfile << b2bp.correctCount << "," << b2bp.branchCount << ";";
+      cout << b2bp.correctCount << "," << b2bp.branchCount << ";";
 
-      // we need to print a space after every output except the last one
-      if(size_index != 6) {
+      if (size_index != 6) {
         outfile << " ";
-        cout    << " ";
+        cout << " ";
       }
-
+    }
+    outfile << endl;
+    cout << endl;
   }
-  outfile << endl;
-  cout    << endl;
-}
-  
-if(enableBimodalPredictors) {
+
+  if (enableBimodalPredictors) {
     ////////////////////////////////////////////
     // Bimodal three bit predictor
-      BimodalThreeBitPredictor b3bp;
-      
-    for(int size_index = 0; size_index <7; size_index++) {
+    BimodalThreeBitPredictor b3bp;
 
-        int table_size = sizes[size_index];
-        b3bp.setTableSize(table_size);
-        b3bp.reset();
+    for (int size_index = 0; size_index < 7; size_index++) {
+      int table_size = sizes[size_index];
+      b3bp.setTableSize(table_size);
+      b3bp.reset();
 
-        infile.clear();
-        infile.seekg(0, ios::beg);
-        while (infile >> std::hex >> addr >> behavior) {
+      infile.clear();
+      infile.seekg(0, ios::beg);
+      while (infile >> std::hex >> addr >> behavior) {
         b3bp.branchCount++;
         int actualBranch = behavior == "T";
 
-          int prediction = b3bp.getPrediction(addr);
-          if(b3bp.isCorrectPrediction(prediction, actualBranch)) {
-            b3bp.correctCount++;
-          }
-          
-          b3bp.updatePredictor(addr, actualBranch);
+        int prediction = b3bp.getPrediction(addr);
+        if (b3bp.isCorrectPrediction(prediction, actualBranch)) {
+          b3bp.correctCount++;
         }
+        b3bp.updatePredictor(addr, actualBranch);
+      }
 
-        outfile << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
-        cout    << b3bp.correctCount << "," << b3bp.branchCount << ";" ;
+      outfile << b3bp.correctCount << "," << b3bp.branchCount << ";";
+      cout << b3bp.correctCount << "," << b3bp.branchCount << ";";
 
-        // we need to print a space after every output except the last one
-        if(size_index != 6) {
-          outfile << " ";
-          cout    << " ";
-        }
-
+      if (size_index != 6) {
+        outfile << " ";
+        cout << " ";
+      }
     }
     outfile << endl;
-    cout    << endl;
-}
+    cout << endl;
+  }
 
-
-if(enableGsharePredictor) {
+  if (enableGsharePredictor) {
     ////////////////////////////////////////////
     // Gshare bit predictor
-
-    // cout << "Gshare  bit predictor" << endl;
     GsharePredictor gshare;
 
-    int bits_lower_bound = 2;// 2;
-    int bits_upper_bound = 12;// 12;
-      
-    for(int bits = bits_lower_bound; bits <=bits_upper_bound; bits++) {
+    int bits_lower_bound = 2;  // 2;
+    int bits_upper_bound = 12; // 12;
 
-        gshare.setTableSize(MAX_TABLE_SIZE);
-        gshare.reset();
-        gshare.setGhrBitCount(bits);
+    for (int bits = bits_lower_bound; bits <= bits_upper_bound; bits++) {
+      gshare.setTableSize(MAX_TABLE_SIZE);
+      gshare.reset();
+      gshare.setGhrBitCount(bits);
 
-        infile.clear();
-        infile.seekg(0, ios::beg);
-        while (infile >> std::hex >> addr >> behavior) {
-          // if(addr == 0x0040d89c && gshare.branchCount<5) {
-          
-            gshare.branchCount++;
-          int actualBranch = behavior == "T";
+      infile.clear();
+      infile.seekg(0, ios::beg);
+      while (infile >> std::hex >> addr >> behavior) {
+        gshare.branchCount++;
+        int actualBranch = behavior == "T";
 
-            int prediction = gshare.getPrediction(addr);
-            if(gshare.isCorrectPrediction(prediction, actualBranch)) {
-              gshare.correctCount++;
-            }
-
-            gshare.updatePredictor(addr, actualBranch);
-          // }
+        int prediction = gshare.getPrediction(addr);
+        if (gshare.isCorrectPrediction(prediction, actualBranch)) {
+          gshare.correctCount++;
         }
+        gshare.updatePredictor(addr, actualBranch);
+      }
 
-        outfile << gshare.correctCount << "," << gshare.branchCount << ";" ;
-        cout    << gshare.correctCount << "," << gshare.branchCount << ";" ;
+      outfile << gshare.correctCount << "," << gshare.branchCount << ";";
+      cout << gshare.correctCount << "," << gshare.branchCount << ";";
 
-        // we need to print a space after every output except the last one
-        if(bits != 12) {
-          outfile << " ";
-          cout    << " ";
-        }
-
+      if (bits != 12) {
+        outfile << " ";
+        cout << " ";
+      }
     }
 
     outfile << endl;
-    cout    << endl;
-}
+    cout << endl;
+  }
 
-
-if(enableTournamentPredictor) {
+  if (enableTournamentPredictor) {
     ////////////////////////////////////////////
     // Tournament bit predictor
-
-    // cout << "Tournament  bit predictor" << endl;
-
-    // Tournament setup
-    // From the prompt:
-    // •	Furthermore, configure the selector table with 4096 entries
     TournamentPredictor tp;
     tp.setTableSize(MAX_TABLE_SIZE);
     tp.reset();
 
     // Gshare setup
-    // From the prompt:
-    // •	Configure Gshare with 4096-entry table and 12 bits of global history
-    // •	Initialize the global history register will all zeroes. 
     GsharePredictor tp_gshare;
     tp_gshare.setTableSize(MAX_TABLE_SIZE);
     tp_gshare.reset();
@@ -291,49 +247,45 @@ if(enableTournamentPredictor) {
     tp_gshare.GHR = 0;
 
     // Bimodal setup
-    // From the prompt:
-    // •	configure bimodal predictor with a 4096-entry table. 
     BimodalThreeBitPredictor tp_3bit_bimodal;
     tp_3bit_bimodal.setTableSize(MAX_TABLE_SIZE);
     tp_3bit_bimodal.setInitiaHistoryTablelValue(THREE_STRONGLY_NOT_TAKEN);
     tp_3bit_bimodal.reset();
 
-
     infile.clear();
     infile.seekg(0, ios::beg);
-    while (infile >> std::hex >> addr >> behavior) { //} && tp.branchCount < 80) {
-      
-        tp.branchCount++;
-        int actualBranch = behavior == "T";
-        bool gshareCorrect = false;
-        bool bimodalCorrect = false;
+    while (infile >> std::hex >> addr >> behavior) {
+      tp.branchCount++;
+      int actualBranch = behavior == "T";
+      bool gshareCorrect = false;
+      bool bimodalCorrect = false;
 
-        // Do the Gshare business
-        tp_gshare.branchCount++;
-        int gshare_prediction = tp_gshare.getPrediction(addr);
-        if(tp_gshare.isCorrectPrediction(gshare_prediction, actualBranch)) {
-          tp_gshare.correctCount++;
-          gshareCorrect = true;
-        }
-        tp_gshare.updatePredictor(addr, actualBranch);
+      // Do the Gshare business
+      tp_gshare.branchCount++;
+      int gshare_prediction = tp_gshare.getPrediction(addr);
+      if (tp_gshare.isCorrectPrediction(gshare_prediction, actualBranch)) {
+        tp_gshare.correctCount++;
+        gshareCorrect = true;
+      }
+      tp_gshare.updatePredictor(addr, actualBranch);
 
-        // Do the Bimodal business
-        tp_3bit_bimodal.branchCount++;
-        int bimodal_prediction = tp_3bit_bimodal.getPrediction(addr);
-        if(tp_3bit_bimodal.isCorrectPrediction(bimodal_prediction, actualBranch)) {
-          tp_3bit_bimodal.correctCount++;
-          bimodalCorrect = true;
-        }
-        tp_3bit_bimodal.updatePredictor(addr, actualBranch);
+      // Do the Bimodal business
+      tp_3bit_bimodal.branchCount++;
+      int bimodal_prediction = tp_3bit_bimodal.getPrediction(addr);
+      if (tp_3bit_bimodal.isCorrectPrediction(bimodal_prediction, actualBranch)) {
+        tp_3bit_bimodal.correctCount++;
+        bimodalCorrect = true;
+      }
+      tp_3bit_bimodal.updatePredictor(addr, actualBranch);
 
-        // Do the Tournament business
-        int predictorToUse = tp.getPrediction(addr);
-        int prediction = predictorToUse == USE_GSHARE ? gshare_prediction : bimodal_prediction;
-        if(tp.isCorrectPrediction(prediction, actualBranch)) {
-          tp.correctCount++;
-        }
+      // Do the Tournament business
+      int predictorToUse = tp.getPrediction(addr);
+      int prediction = predictorToUse == USE_GSHARE ? gshare_prediction : bimodal_prediction;
+      if (tp.isCorrectPrediction(prediction, actualBranch)) {
+        tp.correctCount++;
+      }
 
-        tp.updateTournamentPredictor(addr, gshareCorrect, bimodalCorrect);
+      tp.updateTournamentPredictor(addr, gshareCorrect, bimodalCorrect);
     }
 
     cout << "tp_gshare:" << endl;
@@ -341,13 +293,12 @@ if(enableTournamentPredictor) {
     cout << "tp_3bit_bimodal:" << endl;
     cout << tp_3bit_bimodal.correctCount << "," << tp_3bit_bimodal.branchCount << ";" << endl;
     cout << "tp:" << endl;
-    outfile << tp.correctCount << "," << tp.branchCount << ";" ;
-    cout    << tp.correctCount << "," << tp.branchCount << ";" ;
+    outfile << tp.correctCount << "," << tp.branchCount << ";";
+    cout << tp.correctCount << "," << tp.branchCount << ";";
 
     outfile << endl;
-    cout    << endl;
-}
-
+    cout << endl;
+  }
 
   // Close the input and output files
   infile.close();

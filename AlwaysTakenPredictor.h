@@ -12,10 +12,10 @@ unsigned int AlwaysTakenPredictor::getIndex(unsigned long long addr) {
   return 0;
 }
 
-int AlwaysTakenPredictor::getPrediction(unsigned long long addr){
+int AlwaysTakenPredictor::getPrediction(unsigned long long addr) {
   return TAKEN;
 }
 
 void AlwaysTakenPredictor::updatePredictor(unsigned long long addr, int actualBranch) {
-    return;
+  return;
 }
