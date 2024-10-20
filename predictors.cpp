@@ -14,8 +14,8 @@
 using namespace std;
 
 
-bool enableBimodalPredictors = false;
-bool enableGsharePredictor = false;
+bool enableBimodalPredictors = true;
+bool enableGsharePredictor = true;
 bool enableTournamentPredictor = true;
 
 

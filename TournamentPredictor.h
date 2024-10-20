@@ -21,12 +21,12 @@ void TournamentPredictor::reset() {
 }
 
 int TournamentPredictor::getPrediction(unsigned long long addr) {
-    bool debug = true;
+    bool debug = false;
     unsigned int index = getIndex(addr);
     int state = history_table[index];
     int prediction = USE_BIMODAL;
 
-    debug = index == 2204;
+    // debug = index == 2204;  // Ucomment to debug a specific index
 
     if (state == STRONGLY_GSHARE || state == WEAKLY_GSHARE) {
         prediction = USE_GSHARE;
@@ -52,7 +52,7 @@ void TournamentPredictor::updateTournamentPredictor(unsigned long long addr, boo
     int currentState = history_table[index];
     
     bool debug = false;
-    debug = index == 2204;
+    // debug = index == 2204;  // Ucomment to debug a specific index
     if (debug) {
         cout << "  updateTournamentPredictor ----------" << endl;
         cout << "   index: " << index << endl;
