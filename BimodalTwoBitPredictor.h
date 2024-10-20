@@ -7,7 +7,6 @@ using namespace std;
 class BimodalTwoBitPredictor: public PredictorBase {
   public:
     int getPrediction(unsigned long long addr);
-    bool isCorrectPrediction(int prediction, int actualBranch);
     void updatePredictor(unsigned long long addr, int actualBranch);
 };
 
@@ -21,13 +20,8 @@ int BimodalTwoBitPredictor::getPrediction(unsigned long long addr){
     if(history_table[index] == STRONGLY_NOT_TAKEN || history_table[index] == WEAKLY_NOT_TAKEN) {
         return NOT_TAKEN; // Not taken
     }
-    else {
-        return TAKEN; // Taken
-    }
-}
-
-bool BimodalTwoBitPredictor::isCorrectPrediction(int prediction, int actualBranch) {
-  return (prediction == actualBranch);
+    
+    return TAKEN; // Taken
 }
 
 void BimodalTwoBitPredictor::updatePredictor(unsigned long long addr, int actualBranch) {
