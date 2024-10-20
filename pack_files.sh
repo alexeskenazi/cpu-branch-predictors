@@ -8,7 +8,7 @@ mkdir $BU_ID
 
 # Step 2: Copy all relevant files into this directory, excluding .o files, executables, and traces
 # Replace 'source_directory' with the directory where your code files are located
-cp ./*.c ./*.h $BU_ID/
+cp ./*.cpp ./*.h ./makefile $BU_ID/
 
 
 # Step 3: Create a tar/gzipped archive of the directory
