@@ -10,6 +10,7 @@
 
 ## Notes
 
+- sh run_all.sh  will run for all provided inputs and outputs.
 - Noticed that some output files in the `correct_outputs` folder have a newline at the end and some don't. This causes `diff` to fail for some of them.
-- diff -bB will ignore the differences
+- Use: diff -bB to ignore the space and new line differences
 - All tests pass.
