@@ -10,7 +10,8 @@
 
 ## Notes
 
-- sh run_all.sh  will run for all provided inputs and outputs.
+- "sh run_all.sh"  will run for all provided inputs and outputs.
+- "sh pack_files.sh" will package the files for submittion.
 - Noticed that some output files in the `correct_outputs` folder have a newline at the end and some don't. This causes `diff` to fail for some of them.
 - Use: diff -bB to ignore the space and new line differences
 - All tests pass.
