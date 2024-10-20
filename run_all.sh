@@ -27,7 +27,7 @@ echo "Contents of short_trace2_output.txt:"
 cat short_trace2_output.txt
 
 # Check if the files are the same
-if diff -bB correct_outputs/short1.txt short_trace2_output.txt > /dev/null; then
+if diff -bB correct_outputs/short2.txt short_trace2_output.txt > /dev/null; then
     echo "Success: The output matches! for short_trace2_output"
 else
     echo "Failure: The output does not match! short_trace2_output"
@@ -41,7 +41,7 @@ echo "Contents of short_trace3_output.txt:"
 cat short_trace3_output.txt
 
 # Check if the files are the same
-if diff -bB correct_outputs/short1.txt short_trace3_output.txt > /dev/null; then
+if diff -bB correct_outputs/short3.txt short_trace3_output.txt > /dev/null; then
     echo "Success: The output matches! for short_trace3_output"
 else
     echo "Failure: The output does not match! short_trace3_output"
