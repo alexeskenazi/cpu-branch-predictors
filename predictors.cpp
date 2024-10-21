@@ -263,7 +263,7 @@ int main(int argc, char *argv[]) {
     // Bimodal setup
     BimodalThreeBitPredictor tp_3bit_bimodal;
     tp_3bit_bimodal.setTableSize(MAX_TABLE_SIZE);
-    tp_3bit_bimodal.setInitiaHistoryTablelValue(THREE_STRONGLY_NOT_TAKEN);
+    tp_3bit_bimodal.setInitialHistoryTableValue(THREE_STRONGLY_NOT_TAKEN);
     tp_3bit_bimodal.reset();
 
     for(int i = 0; i < addresses.size(); i++) {

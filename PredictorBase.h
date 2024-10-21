@@ -7,7 +7,7 @@ using namespace std;
 class PredictorBase {
   public:
     PredictorBase();
-    void setInitiaHistoryTablelValue(int value);
+    void setInitialHistoryTableValue(int value);
     void setTableSize(int size);
     void reset();
     unsigned int getIndex(unsigned long long addr);
@@ -27,7 +27,7 @@ PredictorBase::PredictorBase() {
   reset();
 }
 
-void PredictorBase::setInitiaHistoryTablelValue(int value) {
+void PredictorBase::setInitialHistoryTableValue(int value) {
   initialHistoryTableValue = value;
 }
 
