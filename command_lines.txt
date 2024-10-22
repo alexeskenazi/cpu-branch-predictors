@@ -1,8 +1,17 @@
 
- ./predictors examples/test_input.txt output.txt 
+ * Run Everything:
+ sh run_all.sh
+ 
+ * Run One:
+./predictors traces/short_trace1.txt short_trace1_output.txt
+
+ * Compare outputs 
+ diff -bB correct_outputs/short1.txt short_trace1_output.txt
+
+
  make && ./predictors traces/short_trace1.txt short_trace1_output.txt
  make && ./predictors traces/short_trace2.txt short_trace2_output.txt
-
+ make && ./predictors traces/short_trace3.txt short_trace3_output.txt
 
 
  make && ./predictors traces/long_trace1.txt long_trace1_output.txt
